@@ -90,11 +90,11 @@ export default function Sidebar({
             <span className="text-sm">Share</span>
           </div>
 
-          <div className="flex items-center text-gray-700 hover:text-gray-900 cursor-pointer">
+          {/* <div className="flex items-center text-gray-700 hover:text-gray-900 cursor-pointer">
             <Globe className="h-4 w-4 mr-2" />
             <span className="text-sm">English</span>
             <ChevronDown className="h-4 w-4 ml-auto" />
-          </div>
+          </div> */}
         </div>
 
         <div className="p-4">

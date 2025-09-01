@@ -26,10 +26,10 @@ export default function TopNav({
           <Menu className="h-5 w-5 text-destructive" />
         </button>
         <div className="hidden lg:flex items-center">
-          <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center mr-3">
-            <ShoppingCart className="h-5 w-5 text-gray-600" />
+          <div className="w-8 h-8 bg-accent rounded-lg flex items-center justify-center mr-3">
+            <ShoppingCart className="h-5 w-5 text-primary" />
           </div>
-          <h1 className="text-xl font-semibold text-gray-900">{storeData?.name}</h1>
+          <h1 className="text-xl font-semibold text-primary">{storeData?.name}</h1>
         </div>
       </div>
 
@@ -41,7 +41,7 @@ export default function TopNav({
       </div>
 
       <div className="flex items-center space-x-4">
-        <Link
+        {/* <Link
           href="/"
           className={`p-2 rounded-lg transition-colors ${
             currentPage === "home"
@@ -60,8 +60,8 @@ export default function TopNav({
           }`}
         >
           <Search className="h-5 w-5" />
-        </Link>
-        <button className="p-2 text-gray-600 hover:text-gray-900 rounded-lg transition-colors">
+        </Link> */}
+        <button className="p-2 text-primary hover:text-gray-900 rounded-lg transition-colors">
           <ShoppingCart className="h-5 w-5" />
         </button>
       </div>

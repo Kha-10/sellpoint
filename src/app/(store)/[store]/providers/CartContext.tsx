@@ -1,5 +1,4 @@
 "use client";
-import { strict } from "assert";
 import React, { createContext, useContext, useReducer, ReactNode } from "react";
 
 export interface Inventory {
