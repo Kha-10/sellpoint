@@ -37,6 +37,7 @@ export default function SearchPage({
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
           storeData={storeData}
+          categories={categories}
         />
 
         <div className="flex-1 flex flex-col overflow-auto">

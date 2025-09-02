@@ -4,26 +4,29 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ChevronDown, Share, Plus, X } from "lucide-react";
 import Link from "next/link";
-import { StoreData } from "@/lib/api";
+import { StoreData, Category } from "@/lib/api";
 
 interface SidebarProps {
   sidebarOpen: boolean;
   setSidebarOpen: (open: boolean) => void;
   storeData: StoreData;
+  categories: Category[];
 }
 
 export default function Sidebar({
   sidebarOpen,
   setSidebarOpen,
   storeData,
+  categories,
 }: SidebarProps) {
   const [categoryOpen, setCategoryOpen] = useState(false);
-
+  console.log("categories", categories);
+  
   return (
     <>
       {sidebarOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-20 z-40 lg:hidden"
+          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
@@ -66,16 +69,28 @@ export default function Sidebar({
               />
             </div>
             {categoryOpen && (
+              // <div className="ml-4 space-y-2">
+              //   <Link
+              //     href={`/${storeData?.slug}/category/${categories[0]?.slug}`}
+              //     className="text-sm text-gray-600 cursor-pointer hover:text-gray-900 block"
+              //   >
+              //     Food
+              //   </Link>
+              //   <div className="text-sm text-gray-600 cursor-pointer hover:text-gray-900">
+              //     ထမင်းဝင်း
+              //   </div>
+              // </div>
               <div className="ml-4 space-y-2">
-                <Link
-                  href="/food"
-                  className="text-sm text-gray-600 cursor-pointer hover:text-gray-900 block"
-                >
-                  Food
-                </Link>
-                <div className="text-sm text-gray-600 cursor-pointer hover:text-gray-900">
-                  ထမင်းဝင်း
-                </div>
+                {categories?.length > 0 &&
+                  categories.map((category) => (
+                    <Link
+                      key={category._id}
+                      href={`/${storeData?.slug}/category/${category._id}`}
+                      className="text-sm text-gray-600 cursor-pointer hover:text-gray-900 block"
+                    >
+                      {category.name}
+                    </Link>
+                  ))}
               </div>
             )}
           </div>
@@ -100,7 +115,7 @@ export default function Sidebar({
         <div className="p-4">
           <Button
             variant="outline"
-            className="w-full justify-start text-sm bg-transparent"
+            className="w-full justify-start text-sm bg-transparent hover:bg-gray-100"
           >
             <Plus className="h-4 w-4 mr-2" />
             Create your SellPoint App

@@ -13,7 +13,6 @@ interface HomeClientProps {
 }
 
 export default function HomeClient({ storeData, categories }: HomeClientProps) {
-
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
@@ -29,6 +28,7 @@ export default function HomeClient({ storeData, categories }: HomeClientProps) {
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
           storeData={storeData}
+          categories={categories}
         />
 
         <div className="flex-1 flex flex-col overflow-auto">

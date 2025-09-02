@@ -56,7 +56,7 @@ const ProductList = ({
             placeholder="Search"
             value={searchQuery}
             onChange={handleChange}
-            className="bg-background w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-0 focus:ring-blue-500 focus:border-transparent"
+            className="bg-background w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-0 focus:ring-blue-500 focus:border-transparent"
           />
         </div>
 
@@ -111,7 +111,7 @@ const ProductList = ({
             <Link
               key={item._id}
               href={`/product/${item._id}`}
-              className="bg-background rounded-lg p-4 hover:bg-gray-100 transition-colors group border "
+              className="bg-background rounded-lg p-4 hover:bg-gray-100 transition-colors group border border-gray-200"
             >
               <div className="aspect-square flex items-center justify-center mb-3">
                 <ShoppingCart className="h-12 w-12 text-gray-400 group-hover:text-gray-600 transition-colors" />
