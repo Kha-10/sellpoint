@@ -13,10 +13,10 @@ export default async function Home({
   console.log("storeData",storeData);
   
   const categories = await getCateogryData(storeData.slug);
-
+  console.log("categories",categories)
   return (
     <>
-      <HomeClient storeData={storeData} categories={categories || []} />
+      <HomeClient storeData={storeData} categories={categories?.data || []} />
     </>
   );
 }

@@ -4,8 +4,7 @@ import { useState } from "react";
 import Sidebar from "@/app/(store)/[store]/components/sidebar";
 import TopNav from "@/app/(store)/[store]/components/TopNav";
 import TabNavigation from "@/app/(store)/[store]/components/TabNavigation";
-import { StoreData } from "@/lib/api";
-import { Category } from "@/lib/api";
+import { Category, StoreData } from "@/lib/api";
 import CategoriesList from "./components/CategoriesList";
 
 interface HomeClientProps {

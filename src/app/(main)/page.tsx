@@ -2,7 +2,6 @@ import Link from 'next/link';
 import { ArrowRight, Leaf, Award, Truck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import ProductCard from '@/app/(store)/[store]/components/ProductCard';
 import { products } from '@/app/(store)/[store]/data/products';
 
 const Home = () => {
@@ -85,9 +84,9 @@ const Home = () => {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-            {featuredProducts.map((product) => (
+            {/* {featuredProducts.map((product) => (
               <ProductCard key={product.id} product={product} />
-            ))}
+            ))} */}
           </div>
           
           <div className="text-center">
