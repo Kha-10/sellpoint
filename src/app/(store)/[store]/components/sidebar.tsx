@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { ChevronDown, Share, Globe, Plus, X } from "lucide-react";
+import { ChevronDown, Share, Plus, X } from "lucide-react";
 import Link from "next/link";
 import { StoreData } from "@/lib/api";
 

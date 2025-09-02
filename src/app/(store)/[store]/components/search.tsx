@@ -46,7 +46,6 @@ export default function SearchPage({
               storeData={storeData}
               products={products}
               categories={categories}
-              pagination={pagination}
             />
           </div>
           <div className="border-t border-gray-200 bg-white px-4 py-3 lg:px-6">
