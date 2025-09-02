@@ -38,6 +38,18 @@ export interface Category {
   updatedAt: Date;
 }
 
+interface CategoryResponse {
+  data: Category[];
+  pagination: {
+    currentPage: number;
+    hasNextPage: boolean;
+    hasPreviousPage: boolean;
+    pageSize: number;
+    totalCategories: number;
+    totalPages: number | null;
+  };
+}
+
 export async function getStoreData(
   storeSlug: string
 ): Promise<StoreData | null> {
@@ -49,6 +61,32 @@ export async function getStoreData(
     if (!res.ok) return null;
 
     return res.json();
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      console.error("getStoreData error:", err.message);
+    } else {
+      console.error("getStoreData unknown error:", err);
+    }
+    return null;
+  }
+}
+
+export async function getCateogryData(
+  slug: string
+): Promise<Category[] | null> {
+  try {
+    const all = true;
+    console.log(slug);
+
+    const res = await fetch(
+      `${
+        process.env.NEXT_PUBLIC_API_URL
+      }/api/public/stores/${slug}/categories?${all ? "all=true" : ""}`
+    );
+    const response: CategoryResponse = await res.json();
+    console.log("API response:", response);
+
+    return response.data;
   } catch (err: unknown) {
     if (err instanceof Error) {
       console.error("getStoreData error:", err.message);

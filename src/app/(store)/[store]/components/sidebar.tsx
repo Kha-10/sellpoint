@@ -48,7 +48,7 @@ export default function Sidebar({
 
         <div className="p-4 space-y-4 flex-1">
           <div className="flex items-center text-gray-700 hover:text-gray-900 cursor-pointer">
-            <Link href={`/${storeData.slug}`} className="text-sm font-medium">
+            <Link href={`/${storeData?.slug}`} className="text-sm font-medium">
               Home
             </Link>
           </div>
