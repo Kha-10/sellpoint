@@ -20,7 +20,6 @@ export default function FilterSheet({
   onOpenChange,
   categories,
 }: FilterSheetProps) {
-  console.log("pagination",pagination);
   
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>

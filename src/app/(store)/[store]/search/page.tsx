@@ -4,30 +4,42 @@ import { notFound } from "next/navigation";
 
 export default async function Home({
   params,
+  searchParams,
 }: {
   params: Promise<{ store: string }>;
+  searchParams?: Promise<{
+    page?: number;
+    categories?: string;
+    searchQuery?: string;
+  }>;
 }) {
   const { store } = await params;
+  const resolvedSearch = await searchParams;
   const storeData = await getStoreData(store);
   if (!storeData) notFound();
+
+  const page = Number(resolvedSearch?.page) || 1;
+  const categoriesFromParams = resolvedSearch?.categories?.split(",") || [];
+  const searchQuery = resolvedSearch?.searchQuery || "";
+
   const products = await getProducts({
     slug: storeData.slug,
-    page: 1,
-    categories: [],
+    page: page,
+    categories: categoriesFromParams,
     visibility: "visible",
     sortBy: "createdAt",
     sortDirection: "asc",
-    searchQuery: "",
+    searchQuery: searchQuery,
   });
 
   const categories = await getCateogryData(storeData.slug);
-  console.log("categories from search", categories);
-  
+  console.log("products", products);
+
   return (
     <>
       <SearchPage
         storeData={storeData}
-        products={products ?.data || []}
+        products={products?.data || []}
         categories={categories?.data || []}
         pagination={products?.pagination}
       />

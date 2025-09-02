@@ -162,15 +162,13 @@ export async function getCateogryData(
 ): Promise<CategoryResponse | null> {
   try {
     const all = true;
-    console.log(slug);
-
     const res = await fetch(
       `${
         process.env.NEXT_PUBLIC_API_URL
       }/api/public/stores/${slug}/categories?${all ? "all=true" : ""}`
     );
     const response: CategoryResponse = await res.json();
-    console.log("API response:", response);
+    // console.log("API response:", response);
 
     return response;
   } catch (err: unknown) {
@@ -194,16 +192,17 @@ export async function getProducts({
 }: GetProductsParams): Promise<ProductsAPIResponse | null> {
   try {
     console.log(slug);
-    const url = `/api/public/stores/${slug}/products?page=${page}}${
+    const url = `/api/public/stores/${slug}/products?page=${page}${
       categories ? `&categories=${categories}` : ""
     }${
       visibility ? `&visibility=${visibility}` : ""
     }&sortBy=${sortBy}&sortDirection=${sortDirection}${
       searchQuery ? `&search=${searchQuery}` : ""
     }`;
+    console.log("URL", `${process.env.NEXT_PUBLIC_API_URL}${url}`);
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${url}`);
     const response: ProductsAPIResponse = await res.json();
-    console.log("API response:", response);
+    // console.log("API response:", response);
 
     return response;
   } catch (err: unknown) {
