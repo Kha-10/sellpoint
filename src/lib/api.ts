@@ -38,7 +38,7 @@ export interface Category {
 
 export interface CategoryResponse {
   data: Category[];
-  pagination: {
+  pagination?: {
     currentPage: number;
     hasNextPage: boolean;
     hasPreviousPage: boolean;
@@ -157,7 +157,7 @@ export async function getStoreData(
   }
 }
 
-export async function getCateogryData(
+export async function getCategoryData(
   slug: string
 ): Promise<CategoryResponse | null> {
   try {
@@ -210,6 +210,27 @@ export async function getProducts({
       console.error("getProducts error:", err.message);
     } else {
       console.error("getProducts unknown error:", err);
+    }
+    return null;
+  }
+}
+
+export async function getSingleCategoryData(
+  id: string,
+  slug: string
+): Promise<Category | null> {
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/public/stores/${slug}/categories/${id}`
+    );
+    const response: Category = await res.json();
+
+    return response;
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      console.error("getCateogryData error:", err.message);
+    } else {
+      console.error("getCateogryData unknown error:", err);
     }
     return null;
   }

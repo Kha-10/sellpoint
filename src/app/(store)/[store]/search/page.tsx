@@ -32,15 +32,10 @@ export default async function Home({
     searchQuery: searchQuery,
   });
 
-  // const categories = await getCateogryData(storeData.slug);
-  // console.log("products", products);
-
   return (
     <>
       <SearchPage
-        storeData={storeData}
         products={products?.data || []}
-        // categories={categories?.data || []}
         pagination={products?.pagination}
       />
     </>

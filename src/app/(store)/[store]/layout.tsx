@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "../../../app/globals.css";
-import { getStoreData, getCateogryData } from "@/./lib/api";
+import { getStoreData, getCategoryData } from "@/./lib/api";
 import { CartProvider } from "@/app/(store)/[store]/providers/CartContext";
 import { notFound } from "next/navigation";
 import { LayoutProvider } from "@/app/(store)/[store]/contexts/LayoutContext";
@@ -37,11 +37,11 @@ export default async function RootLayout({
   params: Promise<{ store: string }>;
 }) {
   const { store } = await params;
-  
+
   const [storeData, categories] = await Promise.all([
     getStoreData(store),
     getStoreData(store).then((data) =>
-      data ? getCateogryData(data.slug) : null
+      data ? getCategoryData(data.slug) : null
     ),
   ]);
 

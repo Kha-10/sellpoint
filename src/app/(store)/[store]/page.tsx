@@ -5,7 +5,6 @@ import { useLayout } from "@/app/(store)/[store]/contexts/LayoutContext";
 
 export default function Home() {
   const { storeData, categories } = useLayout();
-  console.log("Home categories", categories);
 
   return (
     <div className="flex flex-col h-screen bg-gray-50">
