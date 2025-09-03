@@ -1,15 +1,17 @@
 import type { Metadata } from "next";
 import "../../../app/globals.css";
-import { getStoreData } from "@/./lib/api";
+import { getStoreData, getCateogryData } from "@/./lib/api";
 import { CartProvider } from "@/app/(store)/[store]/providers/CartContext";
 import { notFound } from "next/navigation";
+import { LayoutProvider } from "@/app/(store)/[store]/contexts/LayoutContext";
+import NavigationLayout from "@/app/(store)/[store]/components/NavigationLayout";
 
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ store: string }> ;
+  params: Promise<{ store: string }>;
 }): Promise<Metadata> {
-  const { store } = await params; 
+  const { store } = await params;
   const storeData = await getStoreData(store);
 
   if (!storeData) {
@@ -32,20 +34,30 @@ export default async function RootLayout({
   params,
 }: {
   children: React.ReactNode;
-  params: Promise<{ store: string }> 
+  params: Promise<{ store: string }>;
 }) {
-  const { store } = await params; 
-  const storeData = await getStoreData(store);
-  console.log("storeData", storeData);
+  const { store } = await params;
+  
+  const [storeData, categories] = await Promise.all([
+    getStoreData(store),
+    getStoreData(store).then((data) =>
+      data ? getCateogryData(data.slug) : null
+    ),
+  ]);
 
-  if (!storeData) notFound();
+  if (!storeData || !categories) notFound();
 
   return (
     <html lang="en">
       <body>
-        <CartProvider>
+        {/* <CartProvider>
           {children}
-        </CartProvider>
+        </CartProvider> */}
+        <LayoutProvider storeData={storeData} categories={categories}>
+          <CartProvider>
+            <NavigationLayout>{children}</NavigationLayout>
+          </CartProvider>
+        </LayoutProvider>
       </body>
     </html>
   );

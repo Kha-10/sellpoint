@@ -1,4 +1,4 @@
-import { getStoreData, getProducts, getCateogryData } from "@/lib/api";
+import { getStoreData, getProducts } from "@/lib/api";
 import SearchPage from "../components/search";
 import { notFound } from "next/navigation";
 
@@ -21,7 +21,6 @@ export default async function Home({
   const page = Number(resolvedSearch?.page) || 1;
   const categoriesFromParams = resolvedSearch?.category?.split(",") || [];
   const searchQuery = resolvedSearch?.searchQuery || "";
-  console.log("categoriesFromParams", categoriesFromParams);
 
   const products = await getProducts({
     slug: storeData.slug,
@@ -33,15 +32,15 @@ export default async function Home({
     searchQuery: searchQuery,
   });
 
-  const categories = await getCateogryData(storeData.slug);
-  console.log("products", products);
+  // const categories = await getCateogryData(storeData.slug);
+  // console.log("products", products);
 
   return (
     <>
       <SearchPage
         storeData={storeData}
         products={products?.data || []}
-        categories={categories?.data || []}
+        // categories={categories?.data || []}
         pagination={products?.pagination}
       />
     </>

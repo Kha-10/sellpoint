@@ -1,22 +1,22 @@
-import { getStoreData, getCateogryData } from "@/lib/api";
-import HomeClient from "./homeclient";
-import { notFound } from "next/navigation";
+"use client";
+import TabNavigation from "./components/TabNavigation";
+import CategoriesList from "./components/CategoriesList";
+import { useLayout } from "@/app/(store)/[store]/contexts/LayoutContext";
 
-export default async function Home({
-  params,
-}: {
-  params: Promise<{ store: string }>;
-}) {
-  const { store } = await params;
-  const storeData = await getStoreData(store);
-  if (!storeData) notFound();
-  console.log("storeData",storeData);
-  
-  const categories = await getCateogryData(storeData.slug);
-  console.log("categories",categories?.data)
+export default function Home() {
+  const { storeData, categories } = useLayout();
+  console.log("Home categories", categories);
+
   return (
-    <>
-      <HomeClient storeData={storeData} categories={categories?.data || []} />
-    </>
+    <div className="flex flex-col h-screen bg-gray-50">
+      <div className="flex-1 p-4 lg:p-6">
+        <TabNavigation currentTab="home" storeData={storeData} />
+
+        <CategoriesList
+          categories={categories?.data || []}
+          storeData={storeData}
+        />
+      </div>
+    </div>
   );
 }

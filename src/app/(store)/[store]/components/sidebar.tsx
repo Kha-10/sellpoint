@@ -4,13 +4,13 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ChevronDown, Share, Plus, X } from "lucide-react";
 import Link from "next/link";
-import { StoreData, Category } from "@/lib/api";
+import { StoreData, CategoryResponse } from "@/lib/api";
 
 interface SidebarProps {
   sidebarOpen: boolean;
   setSidebarOpen: (open: boolean) => void;
   storeData: StoreData;
-  categories: Category[];
+  categories: CategoryResponse;
 }
 
 export default function Sidebar({
@@ -21,7 +21,7 @@ export default function Sidebar({
 }: SidebarProps) {
   const [categoryOpen, setCategoryOpen] = useState(false);
   console.log("categories", categories);
-  
+
   return (
     <>
       {sidebarOpen && (
@@ -81,8 +81,8 @@ export default function Sidebar({
               //   </div>
               // </div>
               <div className="ml-4 space-y-2">
-                {categories?.length > 0 &&
-                  categories.map((category) => (
+                {categories.data?.length > 0 &&
+                  categories.data.map((category) => (
                     <Link
                       key={category._id}
                       href={`/${storeData?.slug}/category/${category._id}`}
