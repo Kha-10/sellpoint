@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import "../../../app/globals.css";
 import { getStoreData, getCategoryData } from "@/./lib/api";
-import { CartProvider } from "@/app/(store)/[store]/providers/CartContext";
 import { notFound } from "next/navigation";
 import { LayoutProvider } from "@/app/(store)/[store]/contexts/LayoutContext";
 import NavigationLayout from "@/app/(store)/[store]/components/NavigationLayout";
@@ -54,9 +53,7 @@ export default async function RootLayout({
           {children}
         </CartProvider> */}
         <LayoutProvider storeData={storeData} categories={categories}>
-          <CartProvider>
-            <NavigationLayout>{children}</NavigationLayout>
-          </CartProvider>
+          <NavigationLayout>{children}</NavigationLayout>
         </LayoutProvider>
       </body>
     </html>

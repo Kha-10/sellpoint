@@ -4,6 +4,7 @@ import { ReactNode } from "react";
 import { useLayout } from "@/app/(store)/[store]/contexts/LayoutContext";
 import TopNav from "@/app/(store)/[store]/components/TopNav";
 import Sidebar from "@/app/(store)/[store]/components/sidebar";
+import { CartProvider } from "../providers/CartContext";
 
 export default function NavigationLayout({
   children,
@@ -13,7 +14,7 @@ export default function NavigationLayout({
   const { sidebarOpen, setSidebarOpen, storeData, categories } = useLayout();
 
   return (
-    <div className="flex flex-col h-screen bg-gray-50">
+    <div className="flex flex-col h-screen bg-white">
       <TopNav setSidebarOpen={setSidebarOpen} storeData={storeData} />
       <div className="flex flex-1 overflow-hidden">
         <Sidebar
@@ -22,7 +23,9 @@ export default function NavigationLayout({
           storeData={storeData}
           categories={categories}
         />
-        <div className="flex-1 flex flex-col overflow-auto">{children}</div>
+        <CartProvider>
+          <div className="flex-1 flex flex-col overflow-auto">{children}</div>
+        </CartProvider>
       </div>
     </div>
   );

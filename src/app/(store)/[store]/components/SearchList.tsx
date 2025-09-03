@@ -49,7 +49,7 @@ const SearchList = ({ products }: { products: Product[] }) => {
             placeholder="Search"
             value={searchQuery}
             onChange={handleChange}
-            className="bg-background w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-0 focus:ring-blue-500 focus:border-transparent"
+            className="bg-background shadow-sm w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-0 focus:ring-blue-500 focus:border-transparent"
           />
         </div>
 

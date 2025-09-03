@@ -50,7 +50,7 @@ export default function Sidebar({
         </div>
 
         <div className="p-4 space-y-4 flex-1">
-          <div className="flex items-center text-gray-700 hover:text-gray-900 cursor-pointer">
+          <div className="flex items-center text-gray-700 hover:text-gray-900 cursor-pointer hover:bg-gray-100 p-2 rounded-md ">
             <Link href={`/${storeData?.slug}`} className="text-sm font-medium">
               Home
             </Link>
@@ -58,7 +58,7 @@ export default function Sidebar({
 
           <div className="space-y-2">
             <div
-              className="flex items-center justify-between text-gray-700 hover:text-gray-900 cursor-pointer"
+              className="flex items-center justify-between text-gray-700 hover:text-gray-900 cursor-pointer hover:bg-gray-100 p-2 rounded-md "
               onClick={() => setCategoryOpen(!categoryOpen)}
             >
               <span className="text-sm font-medium">Category</span>
@@ -80,13 +80,13 @@ export default function Sidebar({
               //     ထမင်းဝင်း
               //   </div>
               // </div>
-              <div className="ml-4 space-y-2">
+              <div className="ml-4 space-y-0">
                 {categories.data?.length > 0 &&
                   categories.data.map((category) => (
                     <Link
                       key={category._id}
                       href={`/${storeData?.slug}/category/${category._id}`}
-                      className="text-sm text-gray-600 cursor-pointer hover:text-gray-900 block"
+                      className="text-sm text-gray-600 cursor-pointer hover:text-gray-900 block hover:bg-gray-100 p-2 rounded-md "
                     >
                       {category.name}
                     </Link>
@@ -95,12 +95,12 @@ export default function Sidebar({
             )}
           </div>
 
-          <div className="flex items-center text-gray-700 hover:text-gray-900 cursor-pointer">
+          <div className="flex items-center text-gray-700 hover:text-gray-900 hover:bg-gray-100 p-2 hover:rounded-md cursor-pointer">
             <Plus className="h-4 w-4 mr-2" />
             <span className="text-sm">Add to Home Screen</span>
           </div>
 
-          <div className="flex items-center text-gray-700 hover:text-gray-900 cursor-pointer">
+          <div className="flex items-center text-gray-700 hover:text-gray-900 hover:bg-gray-100 p-2 rounded-md cursor-pointer">
             <Share className="h-4 w-4 mr-2" />
             <span className="text-sm">Share</span>
           </div>

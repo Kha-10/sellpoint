@@ -2,31 +2,27 @@
 import React, { createContext, useContext, useReducer, ReactNode } from "react";
 
 export interface Inventory {
-  _id: string | Types.ObjectId;
+  _id: string;
   quantity: number;
 }
 
-export interface FlexibleOptionItem {
+interface FlexibleOptionItem {
   name: string;
-  amount?: number; // defaults to 0
-}
-
-export type OptionType = "Checkbox" | "Selection" | "Number" | "Text";
-
-export interface OptionSettings {
-  min?: number;
-  max?: number;
-  inputType?: string;
-  enableQuantity?: boolean;
-  choices?: FlexibleOptionItem[];
+  amount?: number;
 }
 
 export interface Option {
   name: string;
-  type: OptionType;
-  required?: boolean; // defaults to false
-  value?: string; // defaults to ""
-  settings?: OptionSettings;
+  type: "Checkbox" | "Selection" | "Number" | "Text";
+  required?: boolean;
+  value?: string;
+  settings?: {
+    min?: number;
+    max?: number;
+    inputType?: string;
+    enableQuantity?: boolean;
+    choices?: FlexibleOptionItem[];
+  };
 }
 
 export interface Variant {

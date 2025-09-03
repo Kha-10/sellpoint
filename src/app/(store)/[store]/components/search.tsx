@@ -15,7 +15,7 @@ export default function SearchPage({ products, pagination }: SearchPageProps) {
   const { storeData } = useLayout();
 
   return (
-    <div className="flex flex-col h-screen bg-gray-50">
+    <div className="flex flex-col h-screen bg-white">
       <div className="flex-1 p-4 lg:p-6">
         <TabNavigation currentTab="search" storeData={storeData} />
         <SearchList products={products} />

@@ -70,7 +70,7 @@ export default function FilterSidebar({
       </Card> */}
 
       {/* Categories */}
-      <Card className="max-h-[550px] overflow-auto">
+      <Card className="max-h-[550px] overflow-auto shadow-sm">
         <CardHeader>
           <CardTitle className="text-lg">Categories</CardTitle>
         </CardHeader>

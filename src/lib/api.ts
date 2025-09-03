@@ -125,6 +125,11 @@ export interface ProductsAPIResponse {
   };
 }
 
+export type SingleProductResponse = {
+  data?: Product;
+  error?: string;
+};
+
 interface GetProductsParams {
   slug: string;
   page?: number;
@@ -233,5 +238,30 @@ export async function getSingleCategoryData(
       console.error("getCateogryData unknown error:", err);
     }
     return null;
+  }
+}
+
+export async function getSingleProductData(
+  id: string,
+  slug: string
+): Promise<SingleProductResponse> {
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/public/stores/${slug}/products/${id}`
+    );
+
+    if (!res.ok) {
+      const errorText = await res.text();
+      return { error: errorText || "Failed to fetch product" };
+    }
+
+    const data: Product = await res.json();
+    return { data };
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      console.error("getSingleProductData error:", err.message);
+      return { error: err.message };
+    }
+    return { error: "Unknown error occurred" };
   }
 }
