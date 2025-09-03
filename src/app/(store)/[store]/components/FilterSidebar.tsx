@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Category } from "@/lib/api";
+import { useSearchParams, useRouter } from "next/navigation";
 
 // const categories = [
 //   { id: "burmese", name: "Burmese Food", count: 9 },
@@ -20,16 +20,29 @@ export default function FilterSidebar({
   //   const [priceRange, setPriceRange] = useState([0, 100])
   //   const [selectedBrands, setSelectedBrands] = useState<string[]>([])
   //   const [inStockOnly, setInStockOnly] = useState(false)
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-    
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  const selectedCategories = searchParams.get("category")?.split(",") ?? [];
+
   const handleCategoryChange = (categoryId: string, checked: boolean) => {
+    let updatedCategories: string[];
+
     if (checked) {
-      setSelectedCategories([...selectedCategories, categoryId]);
+      updatedCategories = [...selectedCategories, categoryId];
     } else {
-      setSelectedCategories(
-        selectedCategories.filter((id) => id !== categoryId)
-      );
+      updatedCategories = selectedCategories.filter((id) => id !== categoryId);
     }
+
+    const params = new URLSearchParams(searchParams.toString());
+
+    if (updatedCategories.length > 0) {
+      params.set("category", updatedCategories.join(","));
+    } else {
+      params.delete("category");
+    }
+
+    router.push(`?${params.toString()}`);
   };
 
   //   const handleBrandChange = (brandId: string, checked: boolean) => {
@@ -62,28 +75,29 @@ export default function FilterSidebar({
           <CardTitle className="text-lg">Categories</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
-          {!!categories && categories.map((category) => (
-            <div
-              key={category._id}
-              className="flex items-center justify-between"
-            >
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  id={category._id}
-                  checked={selectedCategories.includes(category._id)}
-                  onCheckedChange={(checked) =>
-                    handleCategoryChange(category._id, checked as boolean)
-                  }
-                />
-                <Label htmlFor={category._id} className="text-sm font-normal">
-                  {category.name}
-                </Label>
+          {!!categories &&
+            categories.map((category) => (
+              <div
+                key={category._id}
+                className="flex items-center justify-between"
+              >
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id={category._id}
+                    checked={selectedCategories.includes(category._id)}
+                    onCheckedChange={(checked) =>
+                      handleCategoryChange(category._id, checked as boolean)
+                    }
+                  />
+                  <Label htmlFor={category._id} className="text-sm font-normal">
+                    {category.name}
+                  </Label>
+                </div>
+                <span className="text-xs text-muted-foreground">
+                  ({category.products.length})
+                </span>
               </div>
-              <span className="text-xs text-muted-foreground">
-                ({category.products.length})
-              </span>
-            </div>
-          ))}
+            ))}
         </CardContent>
       </Card>
 

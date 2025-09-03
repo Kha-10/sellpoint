@@ -9,7 +9,7 @@ export default async function Home({
   params: Promise<{ store: string }>;
   searchParams?: Promise<{
     page?: number;
-    categories?: string;
+    category?: string;
     searchQuery?: string;
   }>;
 }) {
@@ -19,8 +19,9 @@ export default async function Home({
   if (!storeData) notFound();
 
   const page = Number(resolvedSearch?.page) || 1;
-  const categoriesFromParams = resolvedSearch?.categories?.split(",") || [];
+  const categoriesFromParams = resolvedSearch?.category?.split(",") || [];
   const searchQuery = resolvedSearch?.searchQuery || "";
+  console.log("categoriesFromParams", categoriesFromParams);
 
   const products = await getProducts({
     slug: storeData.slug,
