@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Label } from "@/components/ui/label";
 import Image from "next/image";
-import { Card, CardContent } from "@/components/ui/card";
+// import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -19,12 +19,64 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import { Option, Variant } from "@/app/(store)/[store]/providers/CartContext";
 import { formatWithCurrency } from "@/helper/formatCurrency";
 import { StoreData } from "@/lib/api";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { FormSchema, FormValues } from "@/lib/validation";
+import { DevTool } from "@hookform/devtools";
+
+const defaultValuesFromProduct = (product: Product): FormValues => ({
+  variantId: "",
+  options: (product?.options?.map((opt) => ({
+    name: opt.name,
+    type: opt.type,
+    required: opt.required,
+    value: opt.value,
+    settings: {
+      min: opt.settings?.min,
+      max: opt.settings?.max,
+      inputType: opt.settings?.inputType,
+      enableQuantity: opt.settings?.enableQuantity,
+      choices: opt.settings?.choices?.map((choice) => ({
+        name: choice.name || "",
+        amount: choice.amount,
+      })),
+    },
+    answers: [],
+    prices: [],
+    quantities: opt.settings?.enableQuantity ? [1] : [],
+  })) || []) as {
+    name: string;
+    type: "Checkbox" | "Selection" | "Number" | "Text";
+    required?: boolean;
+    value?: string;
+    settings?: {
+      min?: number;
+      max?: number;
+      inputType?: string;
+      enableQuantity?: boolean;
+      choices?: { name: string; amount?: number }[];
+    };
+    answers: (string | number)[];
+    prices: number[];
+    quantities: number[];
+  }[],
+});
 
 const ProductDetail = ({
   storeData,
@@ -33,7 +85,17 @@ const ProductDetail = ({
   storeData?: StoreData;
   product: Product;
 }) => {
-  const { dispatch } = useCart();
+  //   const { dispatch } = useCart();
+
+  const form = useForm<FormValues>({
+    resolver: zodResolver(FormSchema),
+    defaultValues: defaultValuesFromProduct(product),
+  });
+
+  const onSubmit = (data: z.infer<typeof FormSchema>) => {
+    console.log("✅ form submit", data);
+  };
+
   const [quantity, setQuantity] = useState(1);
   const [selectedOptions, setSelectedOptions] = useState<
     Record<string, string[]>
@@ -55,31 +117,42 @@ const ProductDetail = ({
   const renderVariatnt = (variant: Variant) => {
     return (
       <div key={variant._id} className="space-y-3">
-        <RadioGroup
-          value={selectedOptions[variant.name]?.[0] || ""}
-          onValueChange={(value) => handleOptionChange(variant.name, value)}
-        >
-          <div key={variant.name} className="flex items-center space-x-2">
-            <RadioGroupItem
-              value={variant.name}
-              id={variant.name}
-              className="border-gray-300 "
-            />
-            <div className=" w-full text-sm flex items-center justify-between">
-              <Label className="text-sm font-medium">
-                {variant.name} <span className="text-destructive">*</span>
-              </Label>
-              <div className="flex items-center space-x-8">
-                <p className="text-muted-foreground">
-                  {formatWithCurrency(
-                    (variant?.price || variant?.originalPrice) ?? 0,
-                    storeData?.settings?.currency ?? "USD"
-                  )}
-                </p>
-              </div>
-            </div>
-          </div>
-        </RadioGroup>
+        <FormField
+          control={form.control}
+          name="variantId"
+          render={({ field }) => (
+            <FormItem className="space-y-3">
+              <FormControl>
+                <RadioGroup
+                  value={field.value || ""}
+                  onValueChange={field.onChange}
+                >
+                  <FormItem
+                    key={variant._id}
+                    className="flex items-center space-x-2"
+                  >
+                    <FormControl>
+                      <RadioGroupItem value={variant._id} id={variant._id} />
+                    </FormControl>
+                    <FormLabel
+                      htmlFor={variant._id}
+                      className="flex-1 flex justify-between"
+                    >
+                      {variant.name}
+                      <span className="text-muted-foreground">
+                        {formatWithCurrency(
+                          variant.price ?? variant.originalPrice ?? 0,
+                          storeData?.settings?.currency ?? "USD"
+                        )}
+                      </span>
+                    </FormLabel>
+                  </FormItem>
+                </RadioGroup>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
       </div>
     );
   };
@@ -261,6 +334,7 @@ const ProductDetail = ({
           {(product?.imgUrls?.length ?? 0) > 0 && (
             <div className="aspect-square rounded-2xl overflow-hidden bg-gradient-to-br from-background to-secondary/30">
               <Image
+                priority={false}
                 width={400}
                 height={400}
                 src={product?.imgUrls![0]}
@@ -279,9 +353,15 @@ const ProductDetail = ({
           <div className="space-y-6">
             <div>
               <div className="mb-2">
-                <span className="text-sm text-muted-foreground font-medium uppercase tracking-wider">
-                  {/* {product.category} */}
-                </span>
+                {product.categories!.length > 0 &&
+                  product.categories!.map((category) => (
+                    <span
+                      key={category._id}
+                      className="text-sm text-muted-foreground font-medium uppercase tracking-wider"
+                    >
+                      {category.name}
+                    </span>
+                  ))}
               </div>
               <h1 className="text-3xl font-serif font-bold text-foreground mb-4">
                 {product.name}
@@ -289,68 +369,81 @@ const ProductDetail = ({
               <p className="text-lg text-muted-foreground mb-6">
                 {product.description}
               </p>
-              <div className="text-2xl font-bold text-primary">
-                {/* ${calculatePrice().toFixed(2)} */}
-              </div>
             </div>
 
             {!!product.variants && product.variants.length > 0 && <Separator />}
 
             {/* Variants */}
-            {product.variants && product.variants.length > 0 && (
-              <div className="space-y-6">
-                <h3 className="text-lg font-serif font-semibold">Variants</h3>
-                <div className="space-y-6">
-                  {product.variants.length > 0 &&
-                    product.variants.map((variant) =>
-                      renderVariatnt(variant as Variant)
-                    )}
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-6"
+              >
+                {product.variants && product.variants.length > 0 && (
+                  <div className="space-y-6">
+                    <h3 className="text-lg font-serif font-semibold">
+                      Variants
+                    </h3>
+                    <div className="space-y-6">
+                      {product.variants.length > 0 && (
+                        <p className="text-sm font-medium">
+                          Variants <span className="text-destructive">*</span>
+                        </p>
+                      )}
+                      {product.variants.map((variant) =>
+                        renderVariatnt(variant as Variant)
+                      )}
+                    </div>
+                  </div>
+                )}
+                {/* Options */}
+                {product.options && product.options.length > 0 && (
+                  <div className="space-y-6">
+                    <h3 className="text-lg font-serif font-semibold">
+                      Options
+                    </h3>
+                    <div className="space-y-6">
+                      {product.options.length > 0 &&
+                        product.options.map((option) =>
+                          renderOption(
+                            option as Option,
+                            product?.options?.indexOf(option) as number
+                          )
+                        )}
+                    </div>
+                  </div>
+                )}
+
+                {!!product.options && product.options.length > 0 && (
+                  <Separator />
+                )}
+
+                {/* Quantity */}
+                <div className="space-y-3">
+                  <Label className="text-sm font-medium">Quantity</Label>
+                  <div className="flex items-center gap-3">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                      disabled={quantity <= 1}
+                    >
+                      <Minus className="h-4 w-4" />
+                    </Button>
+                    <span className="text-lg font-medium w-12 text-center">
+                      {quantity}
+                    </span>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setQuantity(quantity + 1)}
+                    >
+                      <Plus className="h-4 w-4" />
+                    </Button>
+                  </div>
                 </div>
-              </div>
-            )}
-            {/* Options */}
-            {product.options && product.options.length > 0 && (
-              <div className="space-y-6">
-                <h3 className="text-lg font-serif font-semibold">Options</h3>
-                <div className="space-y-6">
-                  {product.options.length > 0 &&
-                    product.options.map((option) =>
-                      renderOption(
-                        option as Option,
-                        product?.options?.indexOf(option) as number
-                      )
-                    )}
-                </div>
-              </div>
-            )}
-
-            {!!product.options && product.options.length > 0 && <Separator />}
-
-            {/* Quantity */}
-            <div className="space-y-3">
-              <Label className="text-sm font-medium">Quantity</Label>
-              <div className="flex items-center gap-3">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  disabled={quantity <= 1}
-                >
-                  <Minus className="h-4 w-4" />
-                </Button>
-                <span className="text-lg font-medium w-12 text-center">
-                  {quantity}
-                </span>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setQuantity(quantity + 1)}
-                >
-                  <Plus className="h-4 w-4" />
-                </Button>
-              </div>
-            </div>
-
+              </form>
+            </Form>
             {/* Action Buttons */}
             <div className="space-y-3 pt-6">
               <Button
@@ -378,6 +471,7 @@ const ProductDetail = ({
           </div>
         </div>
       </div>
+      <DevTool control={form.control} />
     </div>
   );
 };

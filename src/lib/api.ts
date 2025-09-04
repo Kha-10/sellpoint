@@ -89,7 +89,7 @@ export interface Product {
   _id: string;
   name: string;
   visibility?: string; // default "visible"
-  categories?: string[]; // refs Category
+  categories?: Category[]; // refs Category
   type: ProductType;
   price: number;
   originalPrice?: number; // default 0
