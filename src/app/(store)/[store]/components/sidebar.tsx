@@ -33,7 +33,7 @@ export default function Sidebar({
 
       <div
         className={`
-        h-screen fixed overflow-hidden lg:relative inset-y-0 left-0 z-50 lg:z-auto
+        fixed lg:relative inset-y-0 left-0 z-50 lg:z-auto
         w-64 bg-white border-r border-gray-200 flex flex-col
         transform transition-transform duration-300 ease-in-out lg:transform-none
         ${
@@ -116,7 +116,7 @@ export default function Sidebar({
           </div> */}
         </div>
 
-        <div className="p-4">
+        <div className="px-4 py-8">
           <Button
             variant="outline"
             className="w-full justify-start text-sm bg-transparent hover:bg-gray-100"

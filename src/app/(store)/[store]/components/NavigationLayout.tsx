@@ -5,6 +5,7 @@ import { useLayout } from "@/app/(store)/[store]/contexts/LayoutContext";
 import TopNav from "@/app/(store)/[store]/components/TopNav";
 import Sidebar from "@/app/(store)/[store]/components/sidebar";
 import { CartProvider } from "../providers/CartContext";
+import { usePathname } from "next/navigation";
 
 export default function NavigationLayout({
   children,
@@ -12,17 +13,23 @@ export default function NavigationLayout({
   children: ReactNode;
 }) {
   const { sidebarOpen, setSidebarOpen, storeData, categories } = useLayout();
+  const pathname = usePathname();
+
+  // decide if we should hide the sidebar
+  const hideSidebar = pathname.startsWith("/story-appetizers/product/");
 
   return (
-    <div className="flex flex-col min-h-screen bg-white">
+    <div className="flex flex-col min-h-screen bg-white overflow-hidden">
       <TopNav setSidebarOpen={setSidebarOpen} storeData={storeData} />
       <div className="flex flex-1 overflow-hidden">
-        <Sidebar
-          sidebarOpen={sidebarOpen}
-          setSidebarOpen={setSidebarOpen}
-          storeData={storeData}
-          categories={categories}
-        />
+        {!hideSidebar && (
+          <Sidebar
+            sidebarOpen={sidebarOpen}
+            setSidebarOpen={setSidebarOpen}
+            storeData={storeData}
+            categories={categories}
+          />
+        )}
         <CartProvider>
           <div className="flex-1 flex flex-col overflow-auto">{children}</div>
         </CartProvider>

@@ -22,7 +22,6 @@ import {
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -97,21 +96,7 @@ const ProductDetail = ({
   };
 
   const [quantity, setQuantity] = useState(1);
-  const [selectedOptions, setSelectedOptions] = useState<
-    Record<string, string[]>
-  >({});
 
-  const handleOptionChange = (
-    optionId: string,
-    value: string | number | boolean
-  ) => {
-    console.log("optionId", optionId, "value", value);
-
-    setSelectedOptions((prev) => ({
-      ...prev,
-      [optionId]: value ? [optionId] : [],
-    }));
-  };
   console.log("product", product);
 
   const renderVariatnt = (variant: Variant) => {
@@ -149,7 +134,7 @@ const ProductDetail = ({
                   </FormItem>
                 </RadioGroup>
               </FormControl>
-              <FormMessage />
+              {/* <FormMessage /> */}
             </FormItem>
           )}
         />
@@ -157,170 +142,455 @@ const ProductDetail = ({
     );
   };
 
+  //   const renderOption = (option: Option) => {
+  //     // switch (option.type) {
+  //     //   case "Selection":
+  //     //     return (
+  //     //       <div key={index} className="space-y-3">
+  //     //         <Label className="text-sm font-medium">
+  //     //           {option.name}{" "}
+  //     //           {option.required && <span className="text-destructive">*</span>}
+  //     //         </Label>
+  //     //         <RadioGroup
+  //     //           value={selectedOptions[option.name]?.[0] || ""}
+  //     //           onValueChange={(value) => handleOptionChange(option.name, value)}
+  //     //         >
+  //     //           {option.settings?.choices?.map((optionValue) => (
+  //     //             <div
+  //     //               key={optionValue.name}
+  //     //               className="flex items-center space-x-2"
+  //     //             >
+  //     //               <RadioGroupItem
+  //     //                 value={optionValue.name}
+  //     //                 id={`${option.name}-${optionValue.name}`}
+  //     //                 className="border-gray-300 "
+  //     //               />
+  //     //               <div className=" w-full text-sm flex items-center justify-between">
+  //     //                 <p>{optionValue.name}</p>
+  //     //                 <div className="flex items-center space-x-8">
+  //     //                   <p className="text-muted-foreground">
+  //     //                     {formatWithCurrency(
+  //     //                       optionValue?.amount ?? 0,
+  //     //                       storeData?.settings?.currency ?? "USD"
+  //     //                     )}
+  //     //                   </p>
+  //     //                   {option.settings?.enableQuantity && (
+  //     //                     <Select
+  //     //                       value={selectedOptions[optionValue.name]?.[0] || ""}
+  //     //                     >
+  //     //                       <SelectTrigger className="w-[80px] border-gray-300">
+  //     //                         <SelectValue placeholder="1" />
+  //     //                       </SelectTrigger>
+  //     //                       <SelectContent className="max-h-[180px]">
+  //     //                         {Array.from({ length: 10 }, (_, i) => {
+  //     //                           const value = (i + 1).toString();
+  //     //                           return (
+  //     //                             <SelectItem key={value} value={value}>
+  //     //                               {value}
+  //     //                             </SelectItem>
+  //     //                           );
+  //     //                         })}
+  //     //                       </SelectContent>
+  //     //                     </Select>
+  //     //                   )}
+  //     //                 </div>
+  //     //               </div>
+  //     //             </div>
+  //     //           ))}
+  //     //         </RadioGroup>
+  //     //       </div>
+  //     //     );
+
+  //     //   case "Checkbox":
+  //     //     return (
+  //     //       <div key={index} className="space-y-3">
+  //     //         <Label className="text-sm font-medium">
+  //     //           {option.name}{" "}
+  //     //           {option.required && <span className="text-destructive">*</span>}
+  //     //         </Label>
+  //     //         <div className="flex items-center justify-between py-2">
+  //     //           <div className="w-full space-y-4">
+  //     //             {option.settings?.choices?.map((choice) => (
+  //     //               <div
+  //     //                 key={choice.name}
+  //     //                 className="w-full flex items-center justify-between"
+  //     //               >
+  //     //                 <div className="flex items-center space-x-2">
+  //     //                   <Checkbox
+  //     //                     className="border-gray-300"
+  //     //                     key={choice.name}
+  //     //                     id={choice.name}
+  //     //                     checked={
+  //     //                       selectedOptions[choice.name]?.includes(choice.name) ||
+  //     //                       false
+  //     //                     }
+  //     //                     onCheckedChange={(checked) =>
+  //     //                       handleOptionChange(choice.name, checked as boolean)
+  //     //                     }
+  //     //                   />
+  //     //                   <Label htmlFor={choice.name} className="text-sm">
+  //     //                     {choice.name}
+  //     //                   </Label>
+  //     //                 </div>
+  //     //                 <div className="flex items-center space-x-8">
+  //     //                   <p className="text-sm text-muted-foreground">
+  //     //                     {formatWithCurrency(
+  //     //                       choice?.amount ?? 0,
+  //     //                       storeData?.settings?.currency ?? "USD"
+  //     //                     )}
+  //     //                   </p>
+  //     //                   {option.settings?.enableQuantity && (
+  //     //                     <Select value={selectedOptions[choice.name]?.[0] || ""}>
+  //     //                       <SelectTrigger className="w-[80px] border-gray-300">
+  //     //                         <SelectValue placeholder="1" />
+  //     //                       </SelectTrigger>
+  //     //                       <SelectContent className="max-h-[180px]">
+  //     //                         {Array.from({ length: 10 }, (_, i) => {
+  //     //                           const value = (i + 1).toString();
+  //     //                           return (
+  //     //                             <SelectItem key={value} value={value}>
+  //     //                               {value}
+  //     //                             </SelectItem>
+  //     //                           );
+  //     //                         })}
+  //     //                       </SelectContent>
+  //     //                     </Select>
+  //     //                   )}
+  //     //                 </div>
+  //     //               </div>
+  //     //             ))}
+  //     //           </div>
+  //     //         </div>
+  //     //       </div>
+  //     //     );
+
+  //     //   case "Number":
+  //     //     return (
+  //     //       <div key={index} className="space-y-2">
+  //     //         <Label className="text-sm font-medium">
+  //     //           {option.name}
+  //     //           {option.required && <span className="text-destructive">*</span>}
+  //     //         </Label>
+  //     //         <Input
+  //     //           type="number"
+  //     //           className="bg-background w-full py-2 border border-gray-300 rounded-lg focus:ring-offset-0 focus:ring-0 focus:ring-emerald-700 focus:border-transparent"
+  //     //           min="1"
+  //     //           value={selectedOptions[option.name] || 1}
+  //     //           onChange={(e) =>
+  //     //             handleOptionChange(option.name, parseInt(e.target.value) || 1)
+  //     //           }
+  //     //         />
+  //     //       </div>
+  //     //     );
+
+  //     //   case "Text":
+  //     //     return (
+  //     //       <div key={index} className="space-y-2">
+  //     //         <Label className="text-sm font-medium">
+  //     //           {option.name}
+  //     //           {option.required && <span className="text-destructive">*</span>}
+  //     //         </Label>
+  //     //         <Textarea
+  //     //           className="bg-background w-full py-2 border border-gray-300 rounded-lg focus:ring-0 focus:ring-offset-0 focus:ring-emerald-700 focus:border-transparent"
+  //     //           placeholder={`Enter ${option.name.toLowerCase()}...`}
+  //     //           value={selectedOptions[option.name] || ""}
+  //     //           onChange={(e) => handleOptionChange(option.name, e.target.value)}
+  //     //         />
+  //     //       </div>
+  //     //     );
+
+  //     //   default:
+  //     //     return null;
+  //     // }
+  //     console.log("option", option);
+
+  //     <FormField
+  //       key={option.name}
+  //       control={form.control}
+  //       name={`options.${index}.answers`}
+  //       render={({ field }): React.ReactElement => {
+  //         switch (option.type) {
+  //           case "Selection":
+  //             return (
+  //               <FormItem className="space-y-3">
+  //                 <FormLabel>
+  //                   {option.name}{" "}
+  //                   {option.required && (
+  //                     <span className="text-destructive">*</span>
+  //                   )}
+  //                 </FormLabel>
+  //                 <FormControl>
+  //                   <RadioGroup
+  //                     value={field.value?.[0]?.toString() || ""}
+  //                     onValueChange={(val) => field.onChange([val])}
+  //                   >
+  //                     {option.settings?.choices?.map((choice) => (
+  //                       <FormItem
+  //                         key={choice.name}
+  //                         className="flex items-center space-x-2"
+  //                       >
+  //                         <FormControl>
+  //                           <RadioGroupItem
+  //                             value={choice.name}
+  //                             id={`${option.name}-${choice.name}`}
+  //                           />
+  //                         </FormControl>
+  //                         <FormLabel
+  //                           htmlFor={`${option.name}-${choice.name}`}
+  //                           className="flex-1 flex justify-between"
+  //                         >
+  //                           {choice.name}
+  //                           <span className="text-muted-foreground">
+  //                             {formatWithCurrency(
+  //                               choice.amount ?? 0,
+  //                               storeData?.settings?.currency ?? "USD"
+  //                             )}
+  //                           </span>
+  //                         </FormLabel>
+  //                       </FormItem>
+  //                     ))}
+  //                   </RadioGroup>
+  //                 </FormControl>
+  //                 <FormMessage />
+  //               </FormItem>
+  //             );
+
+  //           case "Checkbox":
+  //             return (
+  //               <FormItem className="space-y-3">
+  //                 <FormLabel>
+  //                   {option.name}{" "}
+  //                   {option.required && (
+  //                     <span className="text-destructive">*</span>
+  //                   )}
+  //                 </FormLabel>
+  //                 <div className="space-y-2">
+  //                   {option.settings?.choices?.map((choice) => {
+  //                     const isChecked =
+  //                       field.value?.includes(choice.name) || false;
+  //                     return (
+  //                       <FormItem
+  //                         key={choice.name}
+  //                         className="flex items-center justify-between"
+  //                       >
+  //                         <div className="flex items-center space-x-2">
+  //                           <FormControl>
+  //                             <Checkbox
+  //                               checked={isChecked}
+  //                               onCheckedChange={(checked) =>
+  //                                 checked
+  //                                   ? field.onChange([
+  //                                       ...(field.value || []),
+  //                                       choice.name,
+  //                                     ])
+  //                                   : field.onChange(
+  //                                       (field.value || []).filter(
+  //                                         (v) => v !== choice.name
+  //                                       )
+  //                                     )
+  //                               }
+  //                             />
+  //                           </FormControl>
+  //                           <FormLabel>{choice.name}</FormLabel>
+  //                         </div>
+  //                         <span className="text-muted-foreground">
+  //                           {formatWithCurrency(
+  //                             choice.amount ?? 0,
+  //                             storeData?.settings?.currency ?? "USD"
+  //                           )}
+  //                         </span>
+  //                       </FormItem>
+  //                     );
+  //                   })}
+  //                 </div>
+  //                 <FormMessage />
+  //               </FormItem>
+  //             );
+
+  //           case "Number":
+  //             return (
+  //               <FormItem>
+  //                 <FormLabel>{option.name}</FormLabel>
+  //                 <FormControl>
+  //                   <Input
+  //                     type="number"
+  //                     value={field.value?.[0] ?? ""}
+  //                     onChange={(e) => {
+  //                       const val = e.target.value;
+  //                       field.onChange(val === "" ? [] : [parseInt(val, 10)]);
+  //                     }}
+  //                   />
+  //                 </FormControl>
+  //                 <FormMessage />
+  //               </FormItem>
+  //             );
+
+  //           case "Text":
+  //             return (
+  //               <FormItem>
+  //                 <FormLabel>{option.name}</FormLabel>
+  //                 <FormControl>
+  //                   <Textarea
+  //                     value={field.value?.[0] ?? ""}
+  //                     onChange={(e) => field.onChange([e.target.value])}
+  //                   />
+  //                 </FormControl>
+  //                 <FormMessage />
+  //               </FormItem>
+  //             );
+  //         }
+  //       }}
+  //     />;
+  //   };
+
   const renderOption = (option: Option, index: number) => {
-    switch (option.type) {
-      case "Selection":
-        return (
-          <div key={index} className="space-y-3">
-            <Label className="text-sm font-medium">
-              {option.name}{" "}
-              {option.required && <span className="text-destructive">*</span>}
-            </Label>
-            <RadioGroup
-              value={selectedOptions[option.name]?.[0] || ""}
-              onValueChange={(value) => handleOptionChange(option.name, value)}
-            >
-              {option.settings?.choices?.map((optionValue) => (
-                <div
-                  key={optionValue.name}
-                  className="flex items-center space-x-2"
-                >
-                  <RadioGroupItem
-                    value={optionValue.name}
-                    id={`${option.name}-${optionValue.name}`}
-                    className="border-gray-300 "
-                  />
-                  <div className=" w-full text-sm flex items-center justify-between">
-                    <p>{optionValue.name}</p>
-                    <div className="flex items-center space-x-8">
-                      <p className="text-muted-foreground">
-                        {formatWithCurrency(
-                          optionValue?.amount ?? 0,
-                          storeData?.settings?.currency ?? "USD"
-                        )}
-                      </p>
-                      {option.settings?.enableQuantity && (
-                        <Select
-                          value={selectedOptions[optionValue.name]?.[0] || ""}
+    return (
+      <FormField
+        key={option.name}
+        control={form.control}
+        name={`options.${index}.answers`} // bind to the answers array of this option
+        render={({ field }): React.ReactElement => {
+          switch (option.type) {
+            case "Selection":
+              return (
+                <FormItem className="space-y-3">
+                  <FormLabel>
+                    {option.name}{" "}
+                    {option.required && (
+                      <span className="text-destructive">*</span>
+                    )}
+                  </FormLabel>
+                  <FormControl>
+                    <RadioGroup
+                      value={field.value?.[0]?.toString() || ""}
+                      onValueChange={(val) => field.onChange([val])}
+                    >
+                      {option.settings?.choices?.map((choice) => (
+                        <FormItem
+                          key={choice.name}
+                          className="flex items-center space-x-2"
                         >
-                          <SelectTrigger className="w-[80px] border-gray-300">
-                            <SelectValue placeholder="1" />
-                          </SelectTrigger>
-                          <SelectContent className="max-h-[180px]">
-                            {Array.from({ length: 10 }, (_, i) => {
-                              const value = (i + 1).toString();
-                              return (
-                                <SelectItem key={value} value={value}>
-                                  {value}
-                                </SelectItem>
-                              );
-                            })}
-                          </SelectContent>
-                        </Select>
-                      )}
-                    </div>
+                          <FormControl>
+                            <RadioGroupItem
+                              value={choice.name}
+                              id={`${option.name}-${choice.name}`}
+                            />
+                          </FormControl>
+                          <FormLabel
+                            htmlFor={`${option.name}-${choice.name}`}
+                            className="flex-1 flex justify-between"
+                          >
+                            {choice.name}
+                            <span className="text-muted-foreground">
+                              {formatWithCurrency(
+                                choice.amount ?? 0,
+                                storeData?.settings?.currency ?? "USD"
+                              )}
+                            </span>
+                          </FormLabel>
+                        </FormItem>
+                      ))}
+                    </RadioGroup>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              );
+
+            case "Checkbox":
+              return (
+                <FormItem className="space-y-3">
+                  <FormLabel>
+                    {option.name}{" "}
+                    {option.required && (
+                      <span className="text-destructive">*</span>
+                    )}
+                  </FormLabel>
+                  <div className="space-y-2">
+                    {option.settings?.choices?.map((choice) => {
+                      const isChecked =
+                        field.value?.includes(choice.name) || false;
+                      return (
+                        <FormItem
+                          key={choice.name}
+                          className="flex items-center justify-between"
+                        >
+                          <div className="flex items-center space-x-2">
+                            <FormControl>
+                              <Checkbox
+                                checked={isChecked}
+                                onCheckedChange={(checked) =>
+                                  checked
+                                    ? field.onChange([
+                                        ...(field.value || []),
+                                        choice.name,
+                                      ])
+                                    : field.onChange(
+                                        (field.value || []).filter(
+                                          (v) => v !== choice.name
+                                        )
+                                      )
+                                }
+                              />
+                            </FormControl>
+                            <FormLabel>{choice.name}</FormLabel>
+                          </div>
+                          <span className="text-muted-foreground">
+                            {formatWithCurrency(
+                              choice.amount ?? 0,
+                              storeData?.settings?.currency ?? "USD"
+                            )}
+                          </span>
+                        </FormItem>
+                      );
+                    })}
                   </div>
-                </div>
-              ))}
-            </RadioGroup>
-          </div>
-        );
+                  <FormMessage />
+                </FormItem>
+              );
 
-      case "Checkbox":
-        return (
-          <div key={index} className="space-y-3">
-            <Label className="text-sm font-medium">
-              {option.name}{" "}
-              {option.required && <span className="text-destructive">*</span>}
-            </Label>
-            <div className="flex items-center justify-between py-2">
-              <div className="w-full space-y-4">
-                {option.settings?.choices?.map((choice) => (
-                  <div
-                    key={choice.name}
-                    className="w-full flex items-center justify-between"
-                  >
-                    <div className="flex items-center space-x-2">
-                      <Checkbox
-                        className="border-gray-300"
-                        key={choice.name}
-                        id={choice.name}
-                        checked={
-                          selectedOptions[choice.name]?.includes(choice.name) ||
-                          false
-                        }
-                        onCheckedChange={(checked) =>
-                          handleOptionChange(choice.name, checked as boolean)
-                        }
-                      />
-                      <Label htmlFor={choice.name} className="text-sm">
-                        {choice.name}
-                      </Label>
-                    </div>
-                    <div className="flex items-center space-x-8">
-                      <p className="text-sm text-muted-foreground">
-                        {formatWithCurrency(
-                          choice?.amount ?? 0,
-                          storeData?.settings?.currency ?? "USD"
-                        )}
-                      </p>
-                      {option.settings?.enableQuantity && (
-                        <Select value={selectedOptions[choice.name]?.[0] || ""}>
-                          <SelectTrigger className="w-[80px] border-gray-300">
-                            <SelectValue placeholder="1" />
-                          </SelectTrigger>
-                          <SelectContent className="max-h-[180px]">
-                            {Array.from({ length: 10 }, (_, i) => {
-                              const value = (i + 1).toString();
-                              return (
-                                <SelectItem key={value} value={value}>
-                                  {value}
-                                </SelectItem>
-                              );
-                            })}
-                          </SelectContent>
-                        </Select>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        );
+            case "Number":
+              return (
+                <FormItem>
+                  <FormLabel>{option.name}</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      value={field.value?.[0] ?? ""}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        field.onChange(val === "" ? [] : [parseInt(val, 10)]);
+                      }}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              );
 
-      case "Number":
-        return (
-          <div key={index} className="space-y-2">
-            <Label className="text-sm font-medium">
-              {option.name}
-              {option.required && <span className="text-destructive">*</span>}
-            </Label>
-            <Input
-              type="number"
-              className="bg-background w-full py-2 border border-gray-300 rounded-lg focus:ring-offset-0 focus:ring-0 focus:ring-emerald-700 focus:border-transparent"
-              min="1"
-              value={selectedOptions[option.name] || 1}
-              onChange={(e) =>
-                handleOptionChange(option.name, parseInt(e.target.value) || 1)
-              }
-            />
-          </div>
-        );
+            case "Text":
+              return (
+                <FormItem>
+                  <FormLabel>{option.name}</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      value={field.value?.[0] ?? ""}
+                      onChange={(e) => field.onChange([e.target.value])}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              );
 
-      case "Text":
-        return (
-          <div key={index} className="space-y-2">
-            <Label className="text-sm font-medium">
-              {option.name}
-              {option.required && <span className="text-destructive">*</span>}
-            </Label>
-            <Textarea
-              className="bg-background w-full py-2 border border-gray-300 rounded-lg focus:ring-0 focus:ring-offset-0 focus:ring-emerald-700 focus:border-transparent"
-              placeholder={`Enter ${option.name.toLowerCase()}...`}
-              value={selectedOptions[option.name] || ""}
-              onChange={(e) => handleOptionChange(option.name, e.target.value)}
-            />
-          </div>
-        );
-
-      default:
-        return null;
-    }
+            // handle other cases (Checkbox, Number, Text) similarly
+            default:
+              return <></>;
+          }
+        }}
+      />
+    );
   };
 
   return (
-    <div className="flex flex-col h-screen bg-white px-5">
+    <div className="flex flex-col max-w-7xl mx-auto min-h-screen bg-white px-5">
       <div className="w-full mx-auto p-4 lg:p-6">
         <Button variant="ghost" asChild className="mb-6 hover:bg-gray-100">
           <Link href={`/${storeData?.slug}`}>
@@ -332,7 +602,7 @@ const ProductDetail = ({
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Product Image */}
           {(product?.imgUrls?.length ?? 0) > 0 && (
-            <div className="aspect-square rounded-2xl overflow-hidden bg-gradient-to-br from-background to-secondary/30">
+            <div className="w-[400px] h-[400px] rounded-2xl overflow-hidden bg-gradient-to-br from-background to-secondary/30">
               <Image
                 priority={false}
                 width={400}
@@ -344,7 +614,7 @@ const ProductDetail = ({
             </div>
           )}
           {product?.imgUrls?.length === 0 && (
-            <div className="aspect-square bg-gray-100 rounded-md flex items-center justify-center mb-3">
+            <div className="w-[400px] h-[400px] bg-gray-100 rounded-md flex items-center justify-center mb-3">
               <ShoppingCart className="h-20 w-20 text-gray-400 group-hover:text-gray-600 transition-colors" />
             </div>
           )}
@@ -381,26 +651,36 @@ const ProductDetail = ({
               >
                 {product.variants && product.variants.length > 0 && (
                   <div className="space-y-6">
-                    {product.variants.length > 0 && (
-                      <p className="text-sm font-medium">
-                        Variants <span className="text-destructive">*</span>
-                      </p>
-                    )}
-                    {product.variants.map((variant) =>
-                      renderVariatnt(variant as Variant)
-                    )}
+                    <h3 className="text-lg font-serif font-semibold">
+                      Variants
+                    </h3>
+                    <div className="space-y-6">
+                      {product.variants.length > 0 && (
+                        <p className="text-sm font-medium">
+                          Variants <span className="text-destructive">*</span>
+                        </p>
+                      )}
+                      {product.variants.map((variant) =>
+                        renderVariatnt(variant as Variant)
+                      )}
+                      {form.formState.errors.variantId && (
+                        <p className="text-destructive text-sm">
+                          {form.formState.errors.variantId.message}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                )}
+                {/* Options */}
+                {product.options && product.options.length > 0 && (
+                  <div className="space-y-6">
                     <h3 className="text-lg font-serif font-semibold">
                       Options
                     </h3>
                     <div className="space-y-6">
-                      {product.options &&
-                        product.options.length > 0 &&
-                        product.options.map((option) =>
-                          renderOption(
-                            option as Option,
-                            product?.options?.indexOf(option) as number
-                          )
-                        )}
+                      {product.options?.map((option, index) =>
+                        renderOption(option as Option, index)
+                      )}
                     </div>
                   </div>
                 )}
@@ -439,6 +719,7 @@ const ProductDetail = ({
             <div className="space-y-3 pt-6">
               <Button
                 // onClick={handleAddToCart}
+                type="submit"
                 className="w-full bg-primary hover:bg-primary/90"
                 size="lg"
               >

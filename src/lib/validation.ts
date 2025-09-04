@@ -23,16 +23,29 @@ export const OptionSchema = z.object({
 });
 
 // Your form schema
-export const FormSchema = z.object({
-  options: z.array(
-    OptionSchema.extend({
-      // extra fields that live only in the form
-      answers: z.array(z.union([z.string(), z.number()])),
-      prices: z.array(z.number()).optional(),
-      quantities: z.array(z.number()).optional(),
-    })
-  ),
-  variantId: z.string().optional(),
-});
+export const FormSchema = z
+  .object({
+    options: z.array(
+      OptionSchema.extend({
+        answers: z.array(z.union([z.string(), z.number()])),
+        prices: z.array(z.number()).optional(),
+        quantities: z.array(z.number()).optional(),
+      })
+    ),
+    variantId: z.string().optional(),
+  })
+  .superRefine((data, ctx) => {
+    console.log("data",data);
+    
+    if (data.variantId === "") {
+        console.log('mmsp');
+        
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Product variant is required",
+         path: ["variantId"]
+      });
+    }
+  });
 
 export type FormValues = z.infer<typeof FormSchema>;
