@@ -33,7 +33,7 @@ export default function Sidebar({
 
       <div
         className={`
-        fixed lg:relative inset-y-0 left-0 z-50 lg:z-auto
+        max-h-[700px] fixed lg:relative inset-y-0 left-0 z-50 lg:z-auto
         w-64 bg-white border-r border-gray-200 flex flex-col
         transform transition-transform duration-300 ease-in-out lg:transform-none
         ${sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}

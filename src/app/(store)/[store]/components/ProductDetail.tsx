@@ -381,29 +381,20 @@ const ProductDetail = ({
               >
                 {product.variants && product.variants.length > 0 && (
                   <div className="space-y-6">
-                    <h3 className="text-lg font-serif font-semibold">
-                      Variants
-                    </h3>
-                    <div className="space-y-6">
-                      {product.variants.length > 0 && (
-                        <p className="text-sm font-medium">
-                          Variants <span className="text-destructive">*</span>
-                        </p>
-                      )}
-                      {product.variants.map((variant) =>
-                        renderVariatnt(variant as Variant)
-                      )}
-                    </div>
-                  </div>
-                )}
-                {/* Options */}
-                {product.options && product.options.length > 0 && (
-                  <div className="space-y-6">
+                    {product.variants.length > 0 && (
+                      <p className="text-sm font-medium">
+                        Variants <span className="text-destructive">*</span>
+                      </p>
+                    )}
+                    {product.variants.map((variant) =>
+                      renderVariatnt(variant as Variant)
+                    )}
                     <h3 className="text-lg font-serif font-semibold">
                       Options
                     </h3>
                     <div className="space-y-6">
-                      {product.options.length > 0 &&
+                      {product.options &&
+                        product.options.length > 0 &&
                         product.options.map((option) =>
                           renderOption(
                             option as Option,

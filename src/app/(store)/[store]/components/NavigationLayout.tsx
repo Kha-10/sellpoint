@@ -14,7 +14,7 @@ export default function NavigationLayout({
   const { sidebarOpen, setSidebarOpen, storeData, categories } = useLayout();
 
   return (
-    <div className="flex flex-col h-screen bg-white">
+    <div className="flex flex-col h-full bg-white fixed top-0 left-0 right-0 bottom-0">
       <TopNav setSidebarOpen={setSidebarOpen} storeData={storeData} />
       <div className="flex flex-1 overflow-hidden">
         <Sidebar
