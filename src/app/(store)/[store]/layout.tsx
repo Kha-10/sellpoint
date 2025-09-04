@@ -49,9 +49,6 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body>
-        {/* <CartProvider>
-          {children}
-        </CartProvider> */}
         <LayoutProvider storeData={storeData} categories={categories}>
           <NavigationLayout>{children}</NavigationLayout>
         </LayoutProvider>

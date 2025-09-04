@@ -320,7 +320,7 @@ const ProductDetail = ({
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-white px-5">
+    <div className="flex flex-col h-screen bg-white px-5">
       <div className="w-full mx-auto p-4 lg:p-6">
         <Button variant="ghost" asChild className="mb-6 hover:bg-gray-100">
           <Link href={`/${storeData?.slug}`}>
