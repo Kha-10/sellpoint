@@ -22,7 +22,7 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
-import { Option } from "@/app/(store)/[store]/providers/CartContext";
+import { Option, Variant } from "@/app/(store)/[store]/providers/CartContext";
 import { formatWithCurrency } from "@/helper/formatCurrency";
 import { StoreData } from "@/lib/api";
 
@@ -51,6 +51,38 @@ const ProductDetail = ({
     }));
   };
   console.log("product", product);
+
+  const renderVariatnt = (variant: Variant) => {
+    return (
+      <div key={variant._id} className="space-y-3">
+        <RadioGroup
+          value={selectedOptions[variant.name]?.[0] || ""}
+          onValueChange={(value) => handleOptionChange(variant.name, value)}
+        >
+          <div key={variant.name} className="flex items-center space-x-2">
+            <RadioGroupItem
+              value={variant.name}
+              id={variant.name}
+              className="border-gray-300 "
+            />
+            <div className=" w-full text-sm flex items-center justify-between">
+              <Label className="text-sm font-medium">
+                {variant.name} <span className="text-destructive">*</span>
+              </Label>
+              <div className="flex items-center space-x-8">
+                <p className="text-muted-foreground">
+                  {formatWithCurrency(
+                    (variant?.price || variant?.originalPrice) ?? 0,
+                    storeData?.settings?.currency ?? "USD"
+                  )}
+                </p>
+              </div>
+            </div>
+          </div>
+        </RadioGroup>
+      </div>
+    );
+  };
 
   const renderOption = (option: Option, index: number) => {
     switch (option.type) {
@@ -216,7 +248,7 @@ const ProductDetail = ({
 
   return (
     <div className="flex flex-col min-h-screen bg-white px-5">
-      <div className="max-w-7xl mx-auto p-4 lg:p-6">
+      <div className="w-full mx-auto p-4 lg:p-6">
         <Button variant="ghost" asChild className="mb-6 hover:bg-gray-100">
           <Link href={`/${storeData?.slug}`}>
             <ChevronLeft className="h-4 w-4 mr-2" />
@@ -262,8 +294,20 @@ const ProductDetail = ({
               </div>
             </div>
 
-            <Separator />
+            {!!product.variants && product.variants.length > 0 && <Separator />}
 
+            {/* Variants */}
+            {product.variants && product.variants.length > 0 && (
+              <div className="space-y-6">
+                <h3 className="text-lg font-serif font-semibold">Variants</h3>
+                <div className="space-y-6">
+                  {product.variants.length > 0 &&
+                    product.variants.map((variant) =>
+                      renderVariatnt(variant as Variant)
+                    )}
+                </div>
+              </div>
+            )}
             {/* Options */}
             {product.options && product.options.length > 0 && (
               <div className="space-y-6">
@@ -280,7 +324,7 @@ const ProductDetail = ({
               </div>
             )}
 
-            <Separator />
+            {!!product.options && product.options.length > 0 && <Separator />}
 
             {/* Quantity */}
             <div className="space-y-3">

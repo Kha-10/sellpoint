@@ -26,9 +26,10 @@ export interface Option {
 }
 
 export interface Variant {
+  _id: string;
   name: string;
   price: number;
-  originalPrice?: number; // defaults to 0
+  originalPrice?: number | null; // defaults to 0
 }
 
 export type ProductType = "physical" | "digital" | "service";
@@ -37,7 +38,7 @@ export interface Product {
   _id?: string;
   name: string;
   visibility?: string; // defaults to "visible"
-  categories?: (string)[];
+  categories?: string[];
   type: ProductType;
   price: number;
   originalPrice?: number; // defaults to 0
