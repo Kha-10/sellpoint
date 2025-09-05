@@ -219,6 +219,9 @@ const ProductDetail = ({
           const setPrices = (next: number[]) =>
             form.setValue(pricesPath, next, { shouldValidate: true });
 
+          const currentAnswer = field.value?.[0];
+          const currentQuantity = form.watch(quantitiesPath)?.[0] ?? 1;
+
           switch (option.type) {
             case "Selection":
               return (
@@ -231,34 +234,85 @@ const ProductDetail = ({
                   </FormLabel>
                   <FormControl>
                     <RadioGroup
-                      value={field.value?.[0]?.toString() || ""}
-                      onValueChange={(val) => field.onChange([val])}
+                      //   value={currentAnswer?.toString() || ""}
+                      //   onValueChange={(val) => {
+                      //     field.onChange([val]);
+                      //     setQuantities([1]);
+                      //   }}
+                      value={currentAnswer?.toString() || ""}
+                      onValueChange={(val) => {
+                        field.onChange([val]);
+
+                        const selectedChoice = option.settings?.choices?.find(
+                          (c) => c.name === val
+                        );
+
+                        // reset quantity + set price
+                        setQuantities([1]);
+                        setPrices([selectedChoice?.amount ?? 0]);
+                      }}
                     >
-                      {option.settings?.choices?.map((choice) => (
-                        <FormItem
-                          key={choice.name}
-                          className="flex items-center space-x-2"
-                        >
-                          <FormControl>
-                            <RadioGroupItem
-                              value={choice.name}
-                              id={`${option.name}-${choice.name}`}
-                            />
-                          </FormControl>
-                          <FormLabel
-                            htmlFor={`${option.name}-${choice.name}`}
-                            className="flex-1 flex justify-between"
+                      {option.settings?.choices?.map((choice) => {
+                        const isSelected = currentAnswer === choice.name;
+
+                        return (
+                          <FormItem
+                            key={choice.name}
+                            className="flex items-center justify-between"
                           >
-                            {choice.name}
-                            <span className="text-muted-foreground">
-                              {formatWithCurrency(
-                                choice.amount ?? 0,
-                                storeData?.settings?.currency ?? "USD"
-                              )}
-                            </span>
-                          </FormLabel>
-                        </FormItem>
-                      ))}
+                            <div className="flex items-center space-x-2 py-2">
+                              <FormControl>
+                                <RadioGroupItem
+                                  value={choice.name}
+                                  id={`${option.name}-${choice.name}`}
+                                />
+                              </FormControl>
+                              <FormLabel
+                                htmlFor={`${option.name}-${choice.name}`}
+                                className="flex-1"
+                              >
+                                {choice.name}
+                              </FormLabel>
+                            </div>
+
+                            <div className="flex items-center space-x-4">
+                              {option.settings?.enableQuantity &&
+                                isSelected && (
+                                  <Select
+                                    value={currentQuantity.toString()}
+                                    onValueChange={(val) => {
+                                      setQuantities([Number(val)]);
+                                    }}
+                                  >
+                                    <SelectTrigger
+                                      size="sm"
+                                      className="w-[60px] border-gray-300"
+                                    >
+                                      <SelectValue placeholder="1" />
+                                    </SelectTrigger>
+                                    <SelectContent className="max-h-[180px]">
+                                      {Array.from({ length: 10 }, (_, i) => {
+                                        const value = (i + 1).toString();
+                                        return (
+                                          <SelectItem key={value} value={value}>
+                                            {value}
+                                          </SelectItem>
+                                        );
+                                      })}
+                                    </SelectContent>
+                                  </Select>
+                                )}
+                              {/* Price */}
+                              <span className="text-muted-foreground">
+                                {formatWithCurrency(
+                                  choice.amount ?? 0,
+                                  storeData?.settings?.currency ?? "USD"
+                                )}
+                              </span>
+                            </div>
+                          </FormItem>
+                        );
+                      })}
                     </RadioGroup>
                   </FormControl>
                   <FormMessage />
