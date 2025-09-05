@@ -58,7 +58,7 @@ const defaultValuesFromProduct = (product: Product): FormValues => ({
     },
     answers: [],
     prices: [],
-    quantities: opt.settings?.enableQuantity ? [1] : [],
+    quantities: [],
   })) || []) as {
     name: string;
     type: "Checkbox" | "Selection" | "Number" | "Text";
@@ -201,248 +201,6 @@ const ProductDetail = ({
   //     //       </div>
   //     //     );
 
-  //     //   case "Checkbox":
-  //     //     return (
-  //     //       <div key={index} className="space-y-3">
-  //     //         <Label className="text-sm font-medium">
-  //     //           {option.name}{" "}
-  //     //           {option.required && <span className="text-destructive">*</span>}
-  //     //         </Label>
-  //     //         <div className="flex items-center justify-between py-2">
-  //     //           <div className="w-full space-y-4">
-  //     //             {option.settings?.choices?.map((choice) => (
-  //     //               <div
-  //     //                 key={choice.name}
-  //     //                 className="w-full flex items-center justify-between"
-  //     //               >
-  //     //                 <div className="flex items-center space-x-2">
-  //     //                   <Checkbox
-  //     //                     className="border-gray-300"
-  //     //                     key={choice.name}
-  //     //                     id={choice.name}
-  //     //                     checked={
-  //     //                       selectedOptions[choice.name]?.includes(choice.name) ||
-  //     //                       false
-  //     //                     }
-  //     //                     onCheckedChange={(checked) =>
-  //     //                       handleOptionChange(choice.name, checked as boolean)
-  //     //                     }
-  //     //                   />
-  //     //                   <Label htmlFor={choice.name} className="text-sm">
-  //     //                     {choice.name}
-  //     //                   </Label>
-  //     //                 </div>
-  //     //                 <div className="flex items-center space-x-8">
-  //     //                   <p className="text-sm text-muted-foreground">
-  //     //                     {formatWithCurrency(
-  //     //                       choice?.amount ?? 0,
-  //     //                       storeData?.settings?.currency ?? "USD"
-  //     //                     )}
-  //     //                   </p>
-  //     //                   {option.settings?.enableQuantity && (
-  //     //                     <Select value={selectedOptions[choice.name]?.[0] || ""}>
-  //     //                       <SelectTrigger className="w-[80px] border-gray-300">
-  //     //                         <SelectValue placeholder="1" />
-  //     //                       </SelectTrigger>
-  //     //                       <SelectContent className="max-h-[180px]">
-  //     //                         {Array.from({ length: 10 }, (_, i) => {
-  //     //                           const value = (i + 1).toString();
-  //     //                           return (
-  //     //                             <SelectItem key={value} value={value}>
-  //     //                               {value}
-  //     //                             </SelectItem>
-  //     //                           );
-  //     //                         })}
-  //     //                       </SelectContent>
-  //     //                     </Select>
-  //     //                   )}
-  //     //                 </div>
-  //     //               </div>
-  //     //             ))}
-  //     //           </div>
-  //     //         </div>
-  //     //       </div>
-  //     //     );
-
-  //     //   case "Number":
-  //     //     return (
-  //     //       <div key={index} className="space-y-2">
-  //     //         <Label className="text-sm font-medium">
-  //     //           {option.name}
-  //     //           {option.required && <span className="text-destructive">*</span>}
-  //     //         </Label>
-  //     //         <Input
-  //     //           type="number"
-  //     //           className="bg-background w-full py-2 border border-gray-300 rounded-lg focus:ring-offset-0 focus:ring-0 focus:ring-emerald-700 focus:border-transparent"
-  //     //           min="1"
-  //     //           value={selectedOptions[option.name] || 1}
-  //     //           onChange={(e) =>
-  //     //             handleOptionChange(option.name, parseInt(e.target.value) || 1)
-  //     //           }
-  //     //         />
-  //     //       </div>
-  //     //     );
-
-  //     //   case "Text":
-  //     //     return (
-  //     //       <div key={index} className="space-y-2">
-  //     //         <Label className="text-sm font-medium">
-  //     //           {option.name}
-  //     //           {option.required && <span className="text-destructive">*</span>}
-  //     //         </Label>
-  //     //         <Textarea
-  //     //           className="bg-background w-full py-2 border border-gray-300 rounded-lg focus:ring-0 focus:ring-offset-0 focus:ring-emerald-700 focus:border-transparent"
-  //     //           placeholder={`Enter ${option.name.toLowerCase()}...`}
-  //     //           value={selectedOptions[option.name] || ""}
-  //     //           onChange={(e) => handleOptionChange(option.name, e.target.value)}
-  //     //         />
-  //     //       </div>
-  //     //     );
-
-  //     //   default:
-  //     //     return null;
-  //     // }
-  //     console.log("option", option);
-
-  //     <FormField
-  //       key={option.name}
-  //       control={form.control}
-  //       name={`options.${index}.answers`}
-  //       render={({ field }): React.ReactElement => {
-  //         switch (option.type) {
-  //           case "Selection":
-  //             return (
-  //               <FormItem className="space-y-3">
-  //                 <FormLabel>
-  //                   {option.name}{" "}
-  //                   {option.required && (
-  //                     <span className="text-destructive">*</span>
-  //                   )}
-  //                 </FormLabel>
-  //                 <FormControl>
-  //                   <RadioGroup
-  //                     value={field.value?.[0]?.toString() || ""}
-  //                     onValueChange={(val) => field.onChange([val])}
-  //                   >
-  //                     {option.settings?.choices?.map((choice) => (
-  //                       <FormItem
-  //                         key={choice.name}
-  //                         className="flex items-center space-x-2"
-  //                       >
-  //                         <FormControl>
-  //                           <RadioGroupItem
-  //                             value={choice.name}
-  //                             id={`${option.name}-${choice.name}`}
-  //                           />
-  //                         </FormControl>
-  //                         <FormLabel
-  //                           htmlFor={`${option.name}-${choice.name}`}
-  //                           className="flex-1 flex justify-between"
-  //                         >
-  //                           {choice.name}
-  //                           <span className="text-muted-foreground">
-  //                             {formatWithCurrency(
-  //                               choice.amount ?? 0,
-  //                               storeData?.settings?.currency ?? "USD"
-  //                             )}
-  //                           </span>
-  //                         </FormLabel>
-  //                       </FormItem>
-  //                     ))}
-  //                   </RadioGroup>
-  //                 </FormControl>
-  //                 <FormMessage />
-  //               </FormItem>
-  //             );
-
-  //           case "Checkbox":
-  //             return (
-  //               <FormItem className="space-y-3">
-  //                 <FormLabel>
-  //                   {option.name}{" "}
-  //                   {option.required && (
-  //                     <span className="text-destructive">*</span>
-  //                   )}
-  //                 </FormLabel>
-  //                 <div className="space-y-2">
-  //                   {option.settings?.choices?.map((choice) => {
-  //                     const isChecked =
-  //                       field.value?.includes(choice.name) || false;
-  //                     return (
-  //                       <FormItem
-  //                         key={choice.name}
-  //                         className="flex items-center justify-between"
-  //                       >
-  //                         <div className="flex items-center space-x-2">
-  //                           <FormControl>
-  //                             <Checkbox
-  //                               checked={isChecked}
-  //                               onCheckedChange={(checked) =>
-  //                                 checked
-  //                                   ? field.onChange([
-  //                                       ...(field.value || []),
-  //                                       choice.name,
-  //                                     ])
-  //                                   : field.onChange(
-  //                                       (field.value || []).filter(
-  //                                         (v) => v !== choice.name
-  //                                       )
-  //                                     )
-  //                               }
-  //                             />
-  //                           </FormControl>
-  //                           <FormLabel>{choice.name}</FormLabel>
-  //                         </div>
-  //                         <span className="text-muted-foreground">
-  //                           {formatWithCurrency(
-  //                             choice.amount ?? 0,
-  //                             storeData?.settings?.currency ?? "USD"
-  //                           )}
-  //                         </span>
-  //                       </FormItem>
-  //                     );
-  //                   })}
-  //                 </div>
-  //                 <FormMessage />
-  //               </FormItem>
-  //             );
-
-  //           case "Number":
-  //             return (
-  //               <FormItem>
-  //                 <FormLabel>{option.name}</FormLabel>
-  //                 <FormControl>
-  //                   <Input
-  //                     type="number"
-  //                     value={field.value?.[0] ?? ""}
-  //                     onChange={(e) => {
-  //                       const val = e.target.value;
-  //                       field.onChange(val === "" ? [] : [parseInt(val, 10)]);
-  //                     }}
-  //                   />
-  //                 </FormControl>
-  //                 <FormMessage />
-  //               </FormItem>
-  //             );
-
-  //           case "Text":
-  //             return (
-  //               <FormItem>
-  //                 <FormLabel>{option.name}</FormLabel>
-  //                 <FormControl>
-  //                   <Textarea
-  //                     value={field.value?.[0] ?? ""}
-  //                     onChange={(e) => field.onChange([e.target.value])}
-  //                   />
-  //                 </FormControl>
-  //                 <FormMessage />
-  //               </FormItem>
-  //             );
-  //         }
-  //       }}
-  //     />;
-  //   };
-
   const renderOption = (option: Option, index: number) => {
     return (
       <FormField
@@ -450,6 +208,17 @@ const ProductDetail = ({
         control={form.control}
         name={`options.${index}.answers`} // bind to the answers array of this option
         render={({ field }): React.ReactElement => {
+          const quantitiesPath = `options.${index}.quantities` as const;
+          const pricesPath = `options.${index}.prices` as const;
+
+          const getQuantities = () => form.getValues(quantitiesPath) || [];
+          const setQuantities = (next: number[]) =>
+            form.setValue(quantitiesPath, next, { shouldValidate: true });
+
+          const getPrices = () => form.getValues(pricesPath) || [];
+          const setPrices = (next: number[]) =>
+            form.setValue(pricesPath, next, { shouldValidate: true });
+
           switch (option.type) {
             case "Selection":
               return (
@@ -507,39 +276,101 @@ const ProductDetail = ({
                   </FormLabel>
                   <div className="space-y-2">
                     {option.settings?.choices?.map((choice) => {
-                      const isChecked =
-                        field.value?.includes(choice.name) || false;
+                      const answers = field.value || [];
+                      const idx = answers.indexOf(choice.name);
+                      const isChecked = idx !== -1;
+
+                      const quantities = form.watch(quantitiesPath) || [];
+                      const quantity = quantities[idx] ?? 1;
+
                       return (
                         <FormItem
                           key={choice.name}
                           className="flex items-center justify-between"
                         >
-                          <div className="flex items-center space-x-2">
+                          <div className="flex items-center space-x-2 py-2">
                             <FormControl>
                               <Checkbox
                                 checked={isChecked}
-                                onCheckedChange={(checked) =>
-                                  checked
-                                    ? field.onChange([
-                                        ...(field.value || []),
-                                        choice.name,
-                                      ])
-                                    : field.onChange(
-                                        (field.value || []).filter(
+                                onCheckedChange={(checked) => {
+                                  const currentAnswers = field.value || [];
+                                  const currentQuantities = getQuantities();
+                                  const currentPrices = getPrices();
+
+                                  if (checked) {
+                                    // Add the choice
+                                    field.onChange([
+                                      ...currentAnswers,
+                                      choice.name,
+                                    ]);
+                                    setQuantities([...currentQuantities, 1]);
+                                    setPrices([
+                                      ...currentPrices,
+                                      choice.amount ?? 0,
+                                    ]);
+                                  } else {
+                                    // Remove the choice
+                                    const removeIdx = currentAnswers.indexOf(
+                                      choice.name
+                                    );
+                                    if (removeIdx !== -1) {
+                                      field.onChange(
+                                        currentAnswers.filter(
                                           (v) => v !== choice.name
                                         )
-                                      )
-                                }
+                                      );
+                                      setQuantities(
+                                        currentQuantities.filter(
+                                          (_, i) => i !== removeIdx
+                                        )
+                                      );
+                                      setPrices(
+                                        currentPrices.filter(
+                                          (_, i) => i !== removeIdx
+                                        )
+                                      );
+                                    }
+                                  }
+                                }}
                               />
                             </FormControl>
                             <FormLabel>{choice.name}</FormLabel>
                           </div>
-                          <span className="text-muted-foreground">
-                            {formatWithCurrency(
-                              choice.amount ?? 0,
-                              storeData?.settings?.currency ?? "USD"
+                          <div className="flex items-center space-x-4">
+                            {option.settings?.enableQuantity && isChecked && (
+                              <Select
+                                value={quantity.toString()}
+                                onValueChange={(val) => {
+                                  const nextQuantities = [...getQuantities()];
+                                  nextQuantities[idx] = Number(val);
+                                  setQuantities(nextQuantities);
+                                }}
+                              >
+                                <SelectTrigger
+                                  size="sm"
+                                  className="w-[60px] border-gray-300"
+                                >
+                                  <SelectValue placeholder="1" />
+                                </SelectTrigger>
+                                <SelectContent className="max-h-[180px]">
+                                  {Array.from({ length: 10 }, (_, i) => {
+                                    const value = (i + 1).toString();
+                                    return (
+                                      <SelectItem key={value} value={value}>
+                                        {value}
+                                      </SelectItem>
+                                    );
+                                  })}
+                                </SelectContent>
+                              </Select>
                             )}
-                          </span>
+                            <span className="text-muted-foreground">
+                              {formatWithCurrency(
+                                choice.amount ?? 0,
+                                storeData?.settings?.currency ?? "USD"
+                              )}
+                            </span>
+                          </div>
                         </FormItem>
                       );
                     })}
@@ -590,7 +421,7 @@ const ProductDetail = ({
   };
 
   return (
-    <div className="flex flex-col max-w-7xl mx-auto min-h-screen bg-white px-5">
+    <div className="flex flex-col max-w-5xl mx-auto min-h-screen bg-white px-5">
       <div className="w-full mx-auto p-4 lg:p-6">
         <Button variant="ghost" asChild className="mb-6 hover:bg-gray-100">
           <Link href={`/${storeData?.slug}`}>
@@ -602,9 +433,9 @@ const ProductDetail = ({
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Product Image */}
           {(product?.imgUrls?.length ?? 0) > 0 && (
-            <div className="w-[400px] h-[400px] rounded-2xl overflow-hidden bg-gradient-to-br from-background to-secondary/30">
+            <div className="aspect-square rounded-2xl overflow-hidden bg-gradient-to-br from-background to-secondary/30">
               <Image
-                priority={false}
+                priority
                 width={400}
                 height={400}
                 src={product?.imgUrls![0]}
@@ -614,7 +445,7 @@ const ProductDetail = ({
             </div>
           )}
           {product?.imgUrls?.length === 0 && (
-            <div className="w-[400px] h-[400px] bg-gray-100 rounded-md flex items-center justify-center mb-3">
+            <div className="aspect-square bg-gray-100 rounded-md flex items-center justify-center mb-3">
               <ShoppingCart className="h-20 w-20 text-gray-400 group-hover:text-gray-600 transition-colors" />
             </div>
           )}
@@ -664,7 +495,7 @@ const ProductDetail = ({
                         renderVariatnt(variant as Variant)
                       )}
                       {form.formState.errors.variantId && (
-                        <p className="text-destructive text-sm">
+                        <p className="text-destructive text-sm italic">
                           {form.formState.errors.variantId.message}
                         </p>
                       )}
@@ -694,6 +525,7 @@ const ProductDetail = ({
                   <Label className="text-sm font-medium">Quantity</Label>
                   <div className="flex items-center gap-3">
                     <Button
+                      type="button"
                       variant="outline"
                       size="sm"
                       onClick={() => setQuantity(Math.max(1, quantity - 1))}
@@ -705,6 +537,7 @@ const ProductDetail = ({
                       {quantity}
                     </span>
                     <Button
+                      type="button"
                       variant="outline"
                       size="sm"
                       onClick={() => setQuantity(quantity + 1)}
@@ -713,22 +546,23 @@ const ProductDetail = ({
                     </Button>
                   </div>
                 </div>
-              </form>
-            </Form>
-            {/* Action Buttons */}
-            <div className="space-y-3 pt-6">
-              <Button
-                // onClick={handleAddToCart}
-                type="submit"
-                className="w-full bg-primary hover:bg-primary/90"
-                size="lg"
-              >
-                Add to Cart
-              </Button>
-              {/* <Button variant="outline" className="w-full" size="lg">
+
+                {/* Action Buttons */}
+                <div className="space-y-3 pt-6">
+                  <Button
+                    // onClick={handleAddToCart}
+                    type="submit"
+                    className="w-full bg-primary hover:bg-primary/90"
+                    size="lg"
+                  >
+                    Add to Cart
+                  </Button>
+                  {/* <Button variant="outline" className="w-full" size="lg">
                 Buy Now
               </Button> */}
-            </div>
+                </div>
+              </form>
+            </Form>
 
             {/* Additional Info */}
             {/* <Card className="border-0 bg-secondary/30">
