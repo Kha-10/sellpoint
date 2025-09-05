@@ -6,7 +6,7 @@ const FlexibleOptionItemSchema = z.object({
 });
 
 // Matches your Option interface
-export const OptionSchema = z.object({
+const OptionSchema = z.object({
   name: z.string(),
   type: z.enum(["Checkbox", "Selection", "Number", "Text"]),
   required: z.boolean().optional(),
@@ -22,7 +22,7 @@ export const OptionSchema = z.object({
     .optional(),
 });
 
-const OptionsSchema = z
+const NewOptionsSchema = z
   .array(
     OptionSchema.extend({
       answers: z.array(z.union([z.string(), z.number()])),
@@ -31,8 +31,8 @@ const OptionsSchema = z
     })
   )
   .superRefine((options, ctx) => {
-    console.log("options",options);
-    
+    console.log("options", options);
+
     options.forEach((optionData, optionIndex) => {
       const { type, required } = optionData;
       const answers = optionData.answers || [];
@@ -115,15 +115,13 @@ const OptionsSchema = z
 // form schema
 export const FormSchema = z
   .object({
-    options: OptionsSchema,
+    options: NewOptionsSchema,
     variantId: z.string().optional(),
+    quantity: z.number().min(1),
+    totalPrice: z.number().min(0),
   })
   .superRefine((data, ctx) => {
-    console.log("data", data);
-
     if (data.variantId === "") {
-      console.log("mmsp");
-
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         message: "Product variant is required",

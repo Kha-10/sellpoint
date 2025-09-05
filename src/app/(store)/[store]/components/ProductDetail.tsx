@@ -41,6 +41,8 @@ import { DevTool } from "@hookform/devtools";
 
 const defaultValuesFromProduct = (product: Product): FormValues => ({
   variantId: "",
+  quantity: 1,
+  totalPrice: 0,
   options: (product?.options?.map((opt) => ({
     name: opt.name,
     type: opt.type,
@@ -84,7 +86,7 @@ const ProductDetail = ({
   storeData?: StoreData;
   product: Product;
 }) => {
-  //   const { dispatch } = useCart();
+  const { dispatch } = useCart();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(FormSchema),
@@ -93,9 +95,16 @@ const ProductDetail = ({
 
   const onSubmit = (data: z.infer<typeof FormSchema>) => {
     console.log("✅ form submit", data);
+    // dispatch({
+    //   type: 'ADD_ITEM',
+    //   payload: {
+    //     data
+    //   },
+    // });
+    //  dispatch({ type: 'OPEN_CART' });
   };
 
-  const [quantity, setQuantity] = useState(1);
+  //   const [quantity, setQuantity] = useState(1);
 
   console.log("product", product);
 
@@ -142,65 +151,6 @@ const ProductDetail = ({
     );
   };
 
-  //   const renderOption = (option: Option) => {
-  //     // switch (option.type) {
-  //     //   case "Selection":
-  //     //     return (
-  //     //       <div key={index} className="space-y-3">
-  //     //         <Label className="text-sm font-medium">
-  //     //           {option.name}{" "}
-  //     //           {option.required && <span className="text-destructive">*</span>}
-  //     //         </Label>
-  //     //         <RadioGroup
-  //     //           value={selectedOptions[option.name]?.[0] || ""}
-  //     //           onValueChange={(value) => handleOptionChange(option.name, value)}
-  //     //         >
-  //     //           {option.settings?.choices?.map((optionValue) => (
-  //     //             <div
-  //     //               key={optionValue.name}
-  //     //               className="flex items-center space-x-2"
-  //     //             >
-  //     //               <RadioGroupItem
-  //     //                 value={optionValue.name}
-  //     //                 id={`${option.name}-${optionValue.name}`}
-  //     //                 className="border-gray-300 "
-  //     //               />
-  //     //               <div className=" w-full text-sm flex items-center justify-between">
-  //     //                 <p>{optionValue.name}</p>
-  //     //                 <div className="flex items-center space-x-8">
-  //     //                   <p className="text-muted-foreground">
-  //     //                     {formatWithCurrency(
-  //     //                       optionValue?.amount ?? 0,
-  //     //                       storeData?.settings?.currency ?? "USD"
-  //     //                     )}
-  //     //                   </p>
-  //     //                   {option.settings?.enableQuantity && (
-  //     //                     <Select
-  //     //                       value={selectedOptions[optionValue.name]?.[0] || ""}
-  //     //                     >
-  //     //                       <SelectTrigger className="w-[80px] border-gray-300">
-  //     //                         <SelectValue placeholder="1" />
-  //     //                       </SelectTrigger>
-  //     //                       <SelectContent className="max-h-[180px]">
-  //     //                         {Array.from({ length: 10 }, (_, i) => {
-  //     //                           const value = (i + 1).toString();
-  //     //                           return (
-  //     //                             <SelectItem key={value} value={value}>
-  //     //                               {value}
-  //     //                             </SelectItem>
-  //     //                           );
-  //     //                         })}
-  //     //                       </SelectContent>
-  //     //                     </Select>
-  //     //                   )}
-  //     //                 </div>
-  //     //               </div>
-  //     //             </div>
-  //     //           ))}
-  //     //         </RadioGroup>
-  //     //       </div>
-  //     //     );
-
   const renderOption = (option: Option, index: number) => {
     return (
       <FormField
@@ -234,11 +184,6 @@ const ProductDetail = ({
                   </FormLabel>
                   <FormControl>
                     <RadioGroup
-                      //   value={currentAnswer?.toString() || ""}
-                      //   onValueChange={(val) => {
-                      //     field.onChange([val]);
-                      //     setQuantities([1]);
-                      //   }}
                       value={currentAnswer?.toString() || ""}
                       onValueChange={(val) => {
                         field.onChange([val]);
@@ -582,19 +527,31 @@ const ProductDetail = ({
                       type="button"
                       variant="outline"
                       size="sm"
-                      onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                      disabled={quantity <= 1}
+                      onClick={() => {
+                        const current = form.watch("quantity") || 1;
+                        form.setValue(
+                          "quantity",
+                          Math.max(1, Number(current) - 1)
+                        );
+                      }}
+                      disabled={(form.watch("quantity") as number) <= 1}
                     >
                       <Minus className="h-4 w-4" />
                     </Button>
                     <span className="text-lg font-medium w-12 text-center">
-                      {quantity}
+                      {(form.watch("quantity") as number) || 1}
                     </span>
                     <Button
                       type="button"
                       variant="outline"
                       size="sm"
-                      onClick={() => setQuantity(quantity + 1)}
+                      onClick={() => {
+                        const current = form.watch("quantity") || 1;
+                        form.setValue(
+                          "quantity",
+                          Math.max(1, Number(current) + 1)
+                        );
+                      }}
                     >
                       <Plus className="h-4 w-4" />
                     </Button>
