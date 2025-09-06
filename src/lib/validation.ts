@@ -118,7 +118,6 @@ export const FormSchema = z
     options: NewOptionsSchema,
     variantId: z.string().optional(),
     quantity: z.number().min(1),
-    totalPrice: z.number().min(0),
   })
   .superRefine((data, ctx) => {
     if (data.variantId === "") {

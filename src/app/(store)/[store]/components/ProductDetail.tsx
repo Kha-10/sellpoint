@@ -30,6 +30,7 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
 import { Option, Variant } from "@/app/(store)/[store]/providers/CartContext";
 import { formatWithCurrency } from "@/helper/formatCurrency";
 import { StoreData } from "@/lib/api";
@@ -42,7 +43,6 @@ import { DevTool } from "@hookform/devtools";
 const defaultValuesFromProduct = (product: Product): FormValues => ({
   variantId: "",
   quantity: 1,
-  totalPrice: 0,
   options: (product?.options?.map((opt) => ({
     name: opt.name,
     type: opt.type,
@@ -102,9 +102,22 @@ const ProductDetail = ({
     //   },
     // });
     //  dispatch({ type: 'OPEN_CART' });
-  };
+    let total = 0;
 
-  //   const [quantity, setQuantity] = useState(1);
+    const variant = product.variants?.find((v) => v._id === data.variantId);
+    if (variant) total += variant.price;
+
+    data.options.forEach((opt) => {
+      opt.prices!.forEach((p, i) => {
+        const qty = opt.quantities?.[i] ?? 1;
+        total += p * qty;
+      });
+    });
+
+    total = total * data.quantity;
+
+    console.log("Final total price:", total);
+  };
 
   console.log("product", product);
 
@@ -132,7 +145,14 @@ const ProductDetail = ({
                       htmlFor={variant._id}
                       className="flex-1 flex justify-between"
                     >
-                      {variant.name}
+                      <div className="flex items-center space-x-6">
+                        <span>{variant.name}</span>
+                        {/* {product.inventory!.quantity <= 5 && (
+                          <Badge variant="secondary">
+                            {product.inventory!.quantity} left
+                          </Badge>
+                        )} */}
+                      </div>
                       <span className="text-muted-foreground">
                         {formatWithCurrency(
                           variant.price ?? variant.originalPrice ?? 0,
@@ -481,9 +501,16 @@ const ProductDetail = ({
               >
                 {product.variants && product.variants.length > 0 && (
                   <div className="space-y-6">
-                    <h3 className="text-lg font-serif font-semibold">
-                      Variants
-                    </h3>
+                    <div className="flex items-center gap-3">
+                      <h3 className="text-lg font-serif font-semibold">
+                        Variants
+                      </h3>
+                      {product.inventory!.quantity <= 5 && (
+                        <Badge variant="secondary">
+                          {product.inventory!.quantity} left
+                        </Badge>
+                      )}
+                    </div>
                     <div className="space-y-6">
                       {product.variants.length > 0 && (
                         <p className="text-sm font-medium">
