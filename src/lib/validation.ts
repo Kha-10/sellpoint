@@ -1,132 +1,65 @@
 import { z } from "zod";
+import { Product } from "./api";
 
-const FlexibleOptionItemSchema = z.object({
-  name: z.string(),
-  amount: z.number().optional(),
-});
-
-// Matches your Option interface
-const OptionSchema = z.object({
-  name: z.string(),
-  type: z.enum(["Checkbox", "Selection", "Number", "Text"]),
-  required: z.boolean().optional(),
-  value: z.string().optional(),
-  settings: z
-    .object({
-      min: z.number().optional(),
-      max: z.number().optional(),
-      inputType: z.string().optional(),
-      enableQuantity: z.boolean().optional(),
-      choices: z.array(FlexibleOptionItemSchema).optional(),
-    })
-    .optional(),
-});
-
-const NewOptionsSchema = z
-  .array(
-    OptionSchema.extend({
+export const FormSchema = z.object({
+  variantId: z.string(),
+  quantity: z.number().min(1),
+  options: z.array(
+    z.object({
+      name: z.string(),
       answers: z.array(z.union([z.string(), z.number()])),
-      prices: z.array(z.number()).optional(),
-      quantities: z.array(z.number()).optional(),
+      prices: z.array(z.number()),
+      quantities: z.array(z.number()),
     })
-  )
-  .superRefine((options, ctx) => {
-    console.log("options", options);
+  ),
+});
 
-    options.forEach((optionData, optionIndex) => {
-      const { type, required } = optionData;
-      const answers = optionData.answers || [];
-
-      // --- Text ---
-      if (type === "Text" && required) {
-        const hasValidAnswer =
-          answers.length > 0 &&
-          typeof answers[0] === "string" &&
-          answers[0].trim() !== "";
-        if (!hasValidAnswer) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            path: [optionIndex, "answers", 0],
-            message: "This field is required",
-          });
-        }
-      }
-
-      // --- Number ---
-      if (type === "Number" && required) {
-        const hasValidAnswer =
-          answers.length > 0 &&
-          typeof answers[0] === "number" &&
-          !isNaN(answers[0]);
-        if (!hasValidAnswer) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            path: [optionIndex, "answers", 0],
-            message: "Please enter a valid number",
-          });
-        }
-      }
-
-      // --- Selection ---
-      if (type === "Selection" && required) {
-        const hasValidAnswer =
-          answers.length > 0 && answers[0] !== undefined && answers[0] !== "";
-        if (!hasValidAnswer) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            path: [optionIndex, "answers", 0],
-            message: "Please select an option",
-          });
-        }
-      }
-
-      // --- Checkbox ---
-      if (type === "Checkbox" && required) {
-        const selectedCount = answers.length;
-
-        if (selectedCount === 0) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            path: [optionIndex, "answers"],
-            message: "Select at least one option",
-          });
-        }
-
-        // optional: min/max logic if settings exist
-        const settings = optionData.settings;
-        if (settings?.min && selectedCount < settings.min) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            path: [optionIndex, "answers"],
-            message: `Select at least ${settings.min}`,
-          });
-        }
-        if (settings?.max && selectedCount > settings.max) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            path: [optionIndex, "answers"],
-            message: `You can select up to ${settings.max}`,
-          });
-        }
-      }
-    });
-  });
-
-// form schema
-export const FormSchema = z
-  .object({
-    options: NewOptionsSchema,
-    variantId: z.string().optional(),
-    quantity: z.number().min(1),
-  })
-  .superRefine((data, ctx) => {
-    if (data.variantId === "") {
+export const validateForm = (product: Product) =>
+  FormSchema.superRefine((data, ctx) => {
+    if (
+      !data.variantId ||
+      !product.variants?.some((v) => v._id === data.variantId)
+    ) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message: "Product variant is required",
         path: ["variantId"],
+        message: "Product variant is required",
       });
     }
+
+    data.options.forEach((opt, optionIndex) => {
+      const productOpt = product.options?.find((o) => o.name === opt.name);
+      if (!productOpt) return;
+
+      // Required rule
+      if (productOpt.required && opt.answers.length === 0) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["options", optionIndex, "answers"],
+          message: `${productOpt.name} is required`,
+        });
+      }
+
+      // Min/Max rule
+      const min = productOpt.settings?.min;
+      const max = productOpt.settings?.max;
+
+      if (min && opt.answers.length < min) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["options", optionIndex, "answers"],
+          message: `Select at least ${min} option(s)`,
+        });
+      }
+
+      if (max && opt.answers.length > max) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["options", optionIndex, "answers"],
+          message: `Select at most ${max} option(s)`,
+        });
+      }
+    });
   });
 
 export type FormValues = z.infer<typeof FormSchema>;

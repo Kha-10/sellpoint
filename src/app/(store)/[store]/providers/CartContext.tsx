@@ -61,12 +61,39 @@ export interface Product {
   createdAt?: Date;
   updatedAt?: Date;
 }
+interface OptionItem {
+  name: string;
+  answers?: number[];
+  prices?: number[];
+  quantities?: number[];
+}
+
+interface Item {
+  cartId: string | null;
+  items: Pick<
+    Product,
+    | "cartMinimum"
+    | "cartMaximum"
+    | "categories"
+    | "imgUrls"
+    | "photo"
+    | "trackQuantityEnabled"
+  > & {
+    productId: string;
+    productName: string;
+    productinventory: Inventory;
+    basePrice: number;
+    totalPrice: number;
+    quantity: number;
+    variantId: string;
+    options: OptionItem[];
+  };
+}
 
 export interface CartItem {
-  id: string;
-  product: Product;
+  cartId: string | undefined;
+  items: Item;
   quantity: number;
-  selectedOptions: Record<string, any>;
   totalPrice: number;
 }
 

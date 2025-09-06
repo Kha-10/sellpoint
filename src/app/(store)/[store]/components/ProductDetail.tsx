@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import { useState } from "react";
 import { useCart } from "@/app/(store)/[store]/providers/CartContext";
 import { ChevronLeft, Plus, Minus, ShoppingCart } from "lucide-react";
 import Link from "next/link";
@@ -37,46 +36,19 @@ import { StoreData } from "@/lib/api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { FormSchema, FormValues } from "@/lib/validation";
+import { FormSchema, validateForm,FormValues } from "@/lib/validation";
 import { DevTool } from "@hookform/devtools";
 
 const defaultValuesFromProduct = (product: Product): FormValues => ({
   variantId: "",
   quantity: 1,
-  options: (product?.options?.map((opt) => ({
-    name: opt.name,
-    type: opt.type,
-    required: opt.required,
-    value: opt.value,
-    settings: {
-      min: opt.settings?.min,
-      max: opt.settings?.max,
-      inputType: opt.settings?.inputType,
-      enableQuantity: opt.settings?.enableQuantity,
-      choices: opt.settings?.choices?.map((choice) => ({
-        name: choice.name || "",
-        amount: choice.amount,
-      })),
-    },
-    answers: [],
-    prices: [],
-    quantities: [],
-  })) || []) as {
-    name: string;
-    type: "Checkbox" | "Selection" | "Number" | "Text";
-    required?: boolean;
-    value?: string;
-    settings?: {
-      min?: number;
-      max?: number;
-      inputType?: string;
-      enableQuantity?: boolean;
-      choices?: { name: string; amount?: number }[];
-    };
-    answers: (string | number)[];
-    prices: number[];
-    quantities: number[];
-  }[],
+  options:
+    product?.options?.map((opt) => ({
+      name: opt.name,
+      answers: [],
+      prices: [],
+      quantities: [],
+    })) || [],
 });
 
 const ProductDetail = ({
@@ -88,8 +60,10 @@ const ProductDetail = ({
 }) => {
   const { dispatch } = useCart();
 
-  const form = useForm<FormValues>({
-    resolver: zodResolver(FormSchema),
+  const schema = validateForm(product);
+
+  const form = useForm<z.infer<typeof FormSchema>>({
+    resolver: zodResolver(schema),
     defaultValues: defaultValuesFromProduct(product),
   });
 
