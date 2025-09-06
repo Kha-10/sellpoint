@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { useCart } from "@/app/(store)/[store]/providers/CartContext";
+import { useCart,CartItem } from "@/app/(store)/[store]/providers/CartContext";
 import { ChevronLeft, Plus, Minus, ShoppingCart } from "lucide-react";
 import Link from "next/link";
 import { Product } from "@/lib/api";
@@ -36,7 +36,7 @@ import { StoreData } from "@/lib/api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { FormSchema, validateForm,FormValues } from "@/lib/validation";
+import { FormSchema, validateForm, FormValues } from "@/lib/validation";
 import { DevTool } from "@hookform/devtools";
 
 const defaultValuesFromProduct = (product: Product): FormValues => ({
@@ -68,14 +68,6 @@ const ProductDetail = ({
   });
 
   const onSubmit = (data: z.infer<typeof FormSchema>) => {
-    console.log("✅ form submit", data);
-    // dispatch({
-    //   type: 'ADD_ITEM',
-    //   payload: {
-    //     data
-    //   },
-    // });
-    //  dispatch({ type: 'OPEN_CART' });
     let total = 0;
 
     const variant = product.variants?.find((v) => v._id === data.variantId);
@@ -90,7 +82,42 @@ const ProductDetail = ({
 
     total = total * data.quantity;
 
-    console.log("Final total price:", total);
+    // Pricing calculation
+    const basePrice =
+      variant?.price ?? product.price ?? product.originalPrice ?? 0;
+
+    const cartId = sessionStorage.getItem("adminCartId");
+    const cartItem: CartItem = {
+      cartId,
+      items: {
+        cartMinimum: product?.cartMinimum,
+        cartMaximum: product?.cartMaximum,
+        categories: product!.categories,
+        imgUrls: product?.imgUrls,
+        options: data.options,
+        productId: product._id!,
+        trackQuantityEnabled: product.trackQuantityEnabled,
+        productName: variant?.name
+          ? `${product.name} - ${variant.name}`
+          : product.name,
+        photo: product?.photo,
+        productinventory: product!.inventory!.quantity,
+        basePrice,
+        totalPrice: total,
+        quantity: data.quantity,
+        variantId: data.variantId!,
+      },
+      basePrice,
+      totalPrice: total,
+    };
+
+    console.log("✅ form submit", cartItem);
+    console.log("✅ ata", data);
+    dispatch({
+      type: "ADD_ITEM",
+      payload: cartItem,
+    });
+    dispatch({ type: "OPEN_CART" });
   };
 
   console.log("product", product);

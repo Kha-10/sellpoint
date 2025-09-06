@@ -1,5 +1,6 @@
 "use client";
 import React, { createContext, useContext, useReducer, ReactNode } from "react";
+import { Category } from "@/lib/api";
 
 export interface Inventory {
   _id: string;
@@ -38,7 +39,7 @@ export interface Product {
   _id?: string;
   name: string;
   visibility?: string; // defaults to "visible"
-  categories?: string[];
+  categories?: Category[];
   type: ProductType;
   price: number;
   originalPrice?: number; // defaults to 0
@@ -63,14 +64,13 @@ export interface Product {
 }
 interface OptionItem {
   name: string;
-  answers?: number[];
+  answers?: (string | number)[];
   prices?: number[];
   quantities?: number[];
 }
 
-interface Item {
-  cartId: string | null;
-  items: Pick<
+interface Item
+  extends Pick<
     Product,
     | "cartMinimum"
     | "cartMaximum"
@@ -78,22 +78,21 @@ interface Item {
     | "imgUrls"
     | "photo"
     | "trackQuantityEnabled"
-  > & {
-    productId: string;
-    productName: string;
-    productinventory: Inventory;
-    basePrice: number;
-    totalPrice: number;
-    quantity: number;
-    variantId: string;
-    options: OptionItem[];
-  };
+  > {
+  productId: string;
+  productName: string;
+  productinventory: number;
+  basePrice: number;
+  totalPrice: number;
+  quantity: number;
+  variantId: string;
+  options: OptionItem[];
 }
 
 export interface CartItem {
-  cartId: string | undefined;
+  cartId: string | null;
   items: Item;
-  quantity: number;
+  basePrice: number;
   totalPrice: number;
 }
 
@@ -126,30 +125,30 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
         total: items.reduce((sum, item) => sum + item.totalPrice, 0),
       };
     }
-    case "REMOVE_ITEM": {
-      const items = state.items.filter((item) => item.id !== action.payload);
-      return {
-        ...state,
-        items,
-        total: items.reduce((sum, item) => sum + item.totalPrice, 0),
-      };
-    }
-    case "UPDATE_QUANTITY": {
-      const items = state.items.map((item) =>
-        item.id === action.payload.id
-          ? {
-              ...item,
-              quantity: action.payload.quantity,
-              totalPrice: item.product.price * action.payload.quantity,
-            }
-          : item
-      );
-      return {
-        ...state,
-        items,
-        total: items.reduce((sum, item) => sum + item.totalPrice, 0),
-      };
-    }
+    // case "REMOVE_ITEM": {
+    //   const items = state.items.filter((item) => item.id !== action.payload);
+    //   return {
+    //     ...state,
+    //     items,
+    //     total: items.reduce((sum, item) => sum + item.totalPrice, 0),
+    //   };
+    // }
+    // case "UPDATE_QUANTITY": {
+    //   const items = state.items.map((item) =>
+    //     item.id === action.payload.id
+    //       ? {
+    //           ...item,
+    //           quantity: action.payload.quantity,
+    //           totalPrice: item.product.price * action.payload.quantity,
+    //         }
+    //       : item
+    //   );
+    //   return {
+    //     ...state,
+    //     items,
+    //     total: items.reduce((sum, item) => sum + item.totalPrice, 0),
+    //   };
+    // }
     case "CLEAR_CART":
       return { ...state, items: [], total: 0 };
     case "TOGGLE_CART":
@@ -187,5 +186,6 @@ export const useCart = () => {
   if (!context) {
     throw new Error("useCart must be used within CartProvider");
   }
+  
   return context;
 };

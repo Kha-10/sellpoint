@@ -6,6 +6,7 @@ import TopNav from "@/app/(store)/[store]/components/TopNav";
 import Sidebar from "@/app/(store)/[store]/components/sidebar";
 import { CartProvider } from "../providers/CartContext";
 import { usePathname } from "next/navigation";
+import CartDrawer from "@/app/(store)/[store]/components/CartDrawer";
 
 export default function NavigationLayout({
   children,
@@ -19,21 +20,23 @@ export default function NavigationLayout({
   const hideSidebar = pathname.startsWith("/story-appetizers/product/");
 
   return (
-    <div className="flex flex-col min-h-screen bg-white overflow-hidden">
-      <TopNav setSidebarOpen={setSidebarOpen} storeData={storeData} />
-      <div className="flex flex-1 overflow-hidden">
-        {!hideSidebar && (
-          <Sidebar
-            sidebarOpen={sidebarOpen}
-            setSidebarOpen={setSidebarOpen}
-            storeData={storeData}
-            categories={categories}
-          />
-        )}
-        <CartProvider>
+    <CartProvider>
+      <div className="flex flex-col min-h-screen bg-white overflow-hidden">
+        <TopNav setSidebarOpen={setSidebarOpen} storeData={storeData} />
+        <div className="flex flex-1 overflow-hidden">
+          {!hideSidebar && (
+            <Sidebar
+              sidebarOpen={sidebarOpen}
+              setSidebarOpen={setSidebarOpen}
+              storeData={storeData}
+              categories={categories}
+            />
+          )}
+
           <div className="flex-1 flex flex-col overflow-auto">{children}</div>
-        </CartProvider>
+        </div>
       </div>
-    </div>
+      <CartDrawer />
+    </CartProvider>
   );
 }
