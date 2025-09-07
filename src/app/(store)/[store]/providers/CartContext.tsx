@@ -144,30 +144,27 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
         items,
       };
     }
-    // case "REMOVE_ITEM": {
-    //   const items = state.items.filter((item) => item.id !== action.payload);
-    //   return {
-    //     ...state,
-    //     items,
-    //     total: items.reduce((sum, item) => sum + item.totalPrice, 0),
-    //   };
-    // }
-    // case "UPDATE_QUANTITY": {
-    //   const items = state.items.map((item) =>
-    //     item.id === action.payload.id
-    //       ? {
-    //           ...item,
-    //           quantity: action.payload.quantity,
-    //           totalPrice: item.product.price * action.payload.quantity,
-    //         }
-    //       : item
-    //   );
-    //   return {
-    //     ...state,
-    //     items,
-    //     total: items.reduce((sum, item) => sum + item.totalPrice, 0),
-    //   };
-    // }
+    case "REMOVE_ITEM": {
+      const items = state.items.filter((item) => item.id !== action.payload);
+      return {
+        ...state,
+        items,
+      };
+    }
+    case "UPDATE_QUANTITY": {
+      const items = state.items.map((item) =>
+        item.id === action.payload.id
+          ? {
+              ...item,
+              quantity: action.payload.quantity,
+            }
+          : item
+      );
+      return {
+        ...state,
+        items,
+      };
+    }
     case "CLEAR_CART":
       return { ...state, items: [] };
     case "TOGGLE_CART":

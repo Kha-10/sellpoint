@@ -25,6 +25,42 @@ const CartDrawer = () => {
     }
   };
 
+  const removeFromCart = async (
+    productId: string,
+    variantId: string,
+    id: string
+  ) => {
+    const cartId = sessionStorage.getItem("guestCartId");
+    if (!cartId) throw new Error("Missing guestCartId");
+
+    try {
+      const endpoint = `${process.env.NEXT_PUBLIC_API_URL}/api/public/stores/${
+        storeData.slug
+      }/cart/${cartId}/item/${id}/${productId}/${variantId ?? ""}`;
+      const res = await fetch(endpoint, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+      });
+      if (res.status === 200) {
+        const response = await res.json();
+        console.log("response", response);
+
+        if (response.cartDeleted) {
+          dispatch({ type: "CLEAR_CART" });
+          sessionStorage.removeItem("guestCartId");
+        } else {
+          const data = response.cart.items;
+          dispatch({
+            type: "ADD_ITEM",
+            payload: data,
+          });
+        }
+      }
+    } catch (error) {
+      console.error("Failed to remove cart item:", error);
+    }
+  };
+
   return (
     <>
       {/* Backdrop */}
@@ -130,8 +166,15 @@ const CartDrawer = () => {
                           variant="ghost"
                           size="sm"
                           className="h-7 w-7 p-0 text-destructive hover:text-destructive"
+                          //   onClick={() =>
+                          //     dispatch({ type: "REMOVE_ITEM", payload: item.id })
+                          //   }
                           onClick={() =>
-                            dispatch({ type: "REMOVE_ITEM", payload: item.id })
+                            removeFromCart(
+                              item.productId,
+                              item.variantId,
+                              item.id
+                            )
                           }
                         >
                           <Trash2 className="h-3 w-3" />

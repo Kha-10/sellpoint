@@ -12,7 +12,7 @@ export default async function Page({ params }: PageProps) {
   const categoryData = await getSingleCategoryData(id, store);
 
   return (
-    <div className="flex flex-col h-screen bg-gray-50 px-5">
+    <div className="flex flex-col h-screen bg-white px-5">
       <div className="flex items-center p-4 space-x-3">
         <Link href={`/${store}`}>
           <ChevronLeft className="w-5 h-5 text-gray-600" />
