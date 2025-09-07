@@ -7,7 +7,6 @@ import Sidebar from "@/app/(store)/[store]/components/sidebar";
 import { CartProvider } from "../providers/CartContext";
 import { usePathname } from "next/navigation";
 import CartDrawer from "@/app/(store)/[store]/components/CartDrawer";
-import { Suspense } from "react";
 
 export default function NavigationLayout({
   children,
@@ -22,19 +21,23 @@ export default function NavigationLayout({
 
   return (
     <CartProvider>
-      <div className="flex flex-col h-screen bg-white">
-        <TopNav setSidebarOpen={setSidebarOpen} storeData={storeData} />
-        <div className="flex flex-1 overflow-hidden">
-          {!hideSidebar && (
-            <Sidebar
-              sidebarOpen={sidebarOpen}
-              setSidebarOpen={setSidebarOpen}
-              storeData={storeData}
-              categories={categories}
-            />
-          )}
+      <div className="flex h-screen bg-white">
+        {!hideSidebar && (
+          <Sidebar
+            sidebarOpen={sidebarOpen}
+            setSidebarOpen={setSidebarOpen}
+            storeData={storeData}
+            categories={categories}
+          />
+        )}
 
-          <div className="flex-1 flex flex-col overflow-auto">{children}</div>
+        <div className="flex-1 flex flex-col overflow-hidden">
+          <TopNav setSidebarOpen={setSidebarOpen} storeData={storeData} />
+
+          {/* Main Content */}
+          <div className="flex-1 flex flex-col overflow-auto">
+            <div className="flex-1">{children}</div>
+          </div>
         </div>
       </div>
       <CartDrawer />

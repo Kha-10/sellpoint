@@ -82,7 +82,7 @@ const CartDrawer = () => {
                           key={i}
                           className="text-xs text-muted-foreground mt-1 space-x-1 mb-1"
                         >
-                          {option.name} : {" "}
+                          {option.name} :{" "}
                           {option.answers?.map((ans, idx) => (
                             <span key={idx} className="space-x-2 space-y-5">
                               {ans}
@@ -103,7 +103,10 @@ const CartDrawer = () => {
                             size="sm"
                             className="h-7 w-7 p-0"
                             onClick={() =>
-                              handleUpdateQuantity(item.id, item.items.quantity - 1)
+                              handleUpdateQuantity(
+                                item.id,
+                                item.items.quantity - 1
+                              )
                             }
                           >
                             <Minus className="h-3 w-3" />
@@ -116,7 +119,10 @@ const CartDrawer = () => {
                             size="sm"
                             className="h-7 w-7 p-0"
                             onClick={() =>
-                              handleUpdateQuantity(item.id, item.items.quantity + 1)
+                              handleUpdateQuantity(
+                                item.id,
+                                item.items.quantity + 1
+                              )
                             }
                           >
                             <Plus className="h-3 w-3" />
