@@ -10,10 +10,10 @@ export function formatWithCurrency(value: number, code: string, locale = "en") {
 
     // Extract parts
     const parts = formatter.formatToParts(value);
-    const numberPart = parts
+    const numberPart = Number(parts
       .filter((p) => p.type !== "currency")
       .map((p) => p.value)
-      .join("");
+      .join("")).toFixed(2);
     const symbolPart = parts.find((p) => p.type === "currency")?.value || code;
 
     return `${symbolPart}${numberPart}`; // always number + symbol

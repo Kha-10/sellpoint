@@ -4,10 +4,13 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useCart } from "@/app/(store)/[store]/providers/CartContext";
 import Image from "next/image";
+import { formatWithCurrency } from "@/helper/formatCurrency";
+import { useLayout } from "../contexts/LayoutContext";
 
 const CartDrawer = () => {
   const { state, dispatch } = useCart();
-  console.log("state", state);
+  const { storeData } = useLayout();
+  console.log("items", state.items);
 
   if (!state.isOpen) return null;
 
@@ -65,19 +68,19 @@ const CartDrawer = () => {
                       <Image
                         width={20}
                         height={20}
-                        src={item.items?.imgUrls![0]}
-                        alt={item.items.productName}
+                        src={item.imgUrls![0]}
+                        alt={item.productName}
                         className="w-full h-full object-cover"
                       />
                     </div>
 
                     <div className="flex-1">
                       <h4 className="font-medium text-sm">
-                        {item.items.productName}
+                        {item.productName}
                       </h4>
 
                       {/* Selected options */}
-                      {item.items.options.map((option, i) => (
+                      {item.options.map((option, i) => (
                         <div
                           key={i}
                           className="text-xs text-muted-foreground mt-1 space-x-1 mb-1"
@@ -103,26 +106,20 @@ const CartDrawer = () => {
                             size="sm"
                             className="h-7 w-7 p-0"
                             onClick={() =>
-                              handleUpdateQuantity(
-                                item.id,
-                                item.items.quantity - 1
-                              )
+                              handleUpdateQuantity(item.id, item.quantity - 1)
                             }
                           >
                             <Minus className="h-3 w-3" />
                           </Button>
                           <span className="text-sm w-8 text-center">
-                            {item.items.quantity}
+                            {item.quantity}
                           </span>
                           <Button
                             variant="outline"
                             size="sm"
                             className="h-7 w-7 p-0"
                             onClick={() =>
-                              handleUpdateQuantity(
-                                item.id,
-                                item.items.quantity + 1
-                              )
+                              handleUpdateQuantity(item.id, item.quantity + 1)
                             }
                           >
                             <Plus className="h-3 w-3" />
@@ -157,7 +154,10 @@ const CartDrawer = () => {
               <div className="flex justify-between items-center">
                 <span className="text-lg font-serif font-semibold">Total</span>
                 <span className="text-lg font-bold text-primary">
-                  ${state.total.toFixed(2)}
+                  {formatWithCurrency(
+                    state.items.reduce((acc, item) => acc + item.totalPrice, 0),
+                    storeData.settings.currency
+                  )}
                 </span>
               </div>
 

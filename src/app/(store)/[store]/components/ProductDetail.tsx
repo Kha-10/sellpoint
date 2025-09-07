@@ -67,7 +67,7 @@ const ProductDetail = ({
     defaultValues: defaultValuesFromProduct(product),
   });
 
-  const onSubmit = (data: z.infer<typeof FormSchema>) => {
+  const onSubmit = async (data: z.infer<typeof FormSchema>) => {
     let total = 0;
 
     const variant = product.variants?.find((v) => v._id === data.variantId);
@@ -86,7 +86,7 @@ const ProductDetail = ({
     const basePrice =
       variant?.price ?? product.price ?? product.originalPrice ?? 0;
 
-    const cartId = sessionStorage.getItem("adminCartId");
+    const cartId = sessionStorage.getItem("guestCartId");
     const cartItem: CartItem = {
       cartId,
       items: {
@@ -111,13 +111,25 @@ const ProductDetail = ({
       totalPrice: total,
     };
 
-    console.log("✅ form submit", cartItem);
-    console.log("✅ ata", data);
-    dispatch({
-      type: "ADD_ITEM",
-      payload: cartItem,
-    });
-    dispatch({ type: "OPEN_CART" });
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/public/stores/${storeData?.slug}/cart`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(cartItem),
+      }
+    );
+    if (res.status === 200) {
+      const response = await res.json();
+      console.log("response", response.cart.items);
+      sessionStorage.setItem("guestCartId", response.cart.id);
+      const data = response.cart.items;
+      dispatch({
+        type: "ADD_ITEM",
+        payload: data,
+      });
+      dispatch({ type: "OPEN_CART" });
+    }
   };
 
   console.log("product", product);

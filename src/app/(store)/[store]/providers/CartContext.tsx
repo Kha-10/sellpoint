@@ -96,14 +96,34 @@ export interface CartItem {
   totalPrice: number;
 }
 
+export interface CartItemResponse
+  extends Pick<
+    Product,
+    | "cartMinimum"
+    | "cartMaximum"
+    | "categories"
+    | "imgUrls"
+    | "photo"
+    | "trackQuantityEnabled"
+  > {
+  id: string; // from backend
+  productId: string;
+  productName: string;
+  productinventory: number;
+  basePrice: number;
+  totalPrice: number;
+  quantity: number;
+  variantId: string;
+  options: OptionItem[];
+}
+
 interface CartState {
-  items: CartItem[];
+  items: CartItemResponse[];
   isOpen: boolean;
-  total: number;
 }
 
 type CartAction =
-  | { type: "ADD_ITEM"; payload: Omit<CartItem, "id"> }
+  | { type: "ADD_ITEM"; payload: CartItemResponse[] }
   | { type: "REMOVE_ITEM"; payload: string }
   | { type: "UPDATE_QUANTITY"; payload: { id: string; quantity: number } }
   | { type: "CLEAR_CART" }
@@ -114,15 +134,14 @@ type CartAction =
 const cartReducer = (state: CartState, action: CartAction): CartState => {
   switch (action.type) {
     case "ADD_ITEM": {
-      const newItem = {
-        ...action.payload,
-        id: Date.now().toString(),
-      };
-      const items = [...state.items, newItem];
+      const items: CartItemResponse[] = action.payload;
+
+      console.log("newItem", items);
+
+      // const items = newItem;
       return {
         ...state,
         items,
-        total: items.reduce((sum, item) => sum + item.totalPrice, 0),
       };
     }
     // case "REMOVE_ITEM": {
@@ -150,7 +169,7 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
     //   };
     // }
     case "CLEAR_CART":
-      return { ...state, items: [], total: 0 };
+      return { ...state, items: [] };
     case "TOGGLE_CART":
       return { ...state, isOpen: !state.isOpen };
     case "OPEN_CART":
@@ -171,7 +190,6 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [state, dispatch] = useReducer(cartReducer, {
     items: [],
     isOpen: false,
-    total: 0,
   });
 
   return (
@@ -186,6 +204,6 @@ export const useCart = () => {
   if (!context) {
     throw new Error("useCart must be used within CartProvider");
   }
-  
+
   return context;
 };
