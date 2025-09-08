@@ -1,4 +1,4 @@
-import { X, Plus, Minus, Trash2 } from "lucide-react";
+import { X, Plus, Minus, Trash2, ShoppingCart } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -126,13 +126,20 @@ const CartDrawer = () => {
                 {state.items.map((item, i) => (
                   <div key={i} className="flex gap-4">
                     <div className="w-16 h-16 rounded-lg overflow-hidden bg-secondary/50">
-                      <Image
-                        width={20}
-                        height={20}
-                        src={item.imgUrls![0]}
-                        alt={item.productName}
-                        className="w-full h-full object-cover"
-                      />
+                      {(item.imgUrls?.length ?? 0) > 0 && (
+                        <Image
+                          width={20}
+                          height={20}
+                          src={item.imgUrls![0]}
+                          alt={item.productName}
+                          className="w-full h-full object-cover"
+                        />
+                      )}
+                      {item?.imgUrls?.length === 0 && (
+                        <div className="aspect-square bg-gray-100 rounded-md flex items-center justify-center mb-3">
+                          <ShoppingCart className="h-6 w-6 text-gray-400 group-hover:text-gray-600 transition-colors" />
+                        </div>
+                      )}
                     </div>
 
                     <div className="flex-1">
@@ -218,7 +225,10 @@ const CartDrawer = () => {
                       </div>
 
                       <p className="text-sm font-medium mt-1">
-                        {formatWithCurrency(item.totalPrice,storeData.settings.currency)}
+                        {formatWithCurrency(
+                          item.totalPrice,
+                          storeData.settings.currency
+                        )}
                       </p>
                     </div>
                   </div>
