@@ -47,12 +47,8 @@ export default async function RootLayout({
   if (!storeData || !categories) notFound();
 
   return (
-    <html lang="en">
-      <body>
-        <LayoutProvider storeData={storeData} categories={categories}>
-          <NavigationLayout>{children}</NavigationLayout>
-        </LayoutProvider>
-      </body>
-    </html>
+    <LayoutProvider storeData={storeData} categories={categories}>
+      <NavigationLayout>{children}</NavigationLayout>
+    </LayoutProvider>
   );
 }

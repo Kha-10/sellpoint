@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { X, Plus, Minus, Trash2, ShoppingCart } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -10,9 +11,6 @@ import { useLayout } from "../contexts/LayoutContext";
 const CartDrawer = () => {
   const { state, dispatch } = useCart();
   const { storeData } = useLayout();
-  console.log("items", state.items);
-
-  if (!state.isOpen) return null;
 
   const handleUpdateQuantity = async (
     productId: string,
@@ -86,11 +84,40 @@ const CartDrawer = () => {
     }
   };
 
+  useEffect(() => {
+    const cartId = sessionStorage.getItem("guestCartId");
+    if (!cartId) return;
+
+    const getCartData = async (cartId: string) => {
+      try {
+        const endpoint = `${process.env.NEXT_PUBLIC_API_URL}/api/public/stores/${storeData.slug}/cart/${cartId}`;
+        const res = await fetch(endpoint);
+        if (res.status === 200) {
+          const response = await res.json();
+          console.log("response", response);
+          if (response.items) {
+            const data = response.items;
+            dispatch({
+              type: "ADD_ITEM",
+              payload: data,
+            });
+          }
+        }
+      } catch (error) {
+        console.error("❌ Failed to sync with Redis:", error);
+      }
+    };
+
+    getCartData(cartId);
+  }, [dispatch, storeData]);
+
+  if (!state.isOpen) return null;
+
   return (
     <>
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40 transition-opacity"
+        className="fixed inset-0 bg-black/20 backdrop-blur-xs z-40 transition-opacity"
         onClick={() => dispatch({ type: "CLOSE_CART" })}
       />
 
@@ -156,7 +183,7 @@ const CartDrawer = () => {
                           {option.name} :{" "}
                           {option.answers?.map((ans, idx) => (
                             <span key={idx} className="space-x-2 space-y-5">
-                              {ans}
+                              {ans}{" "}
                               {option.prices?.[idx] !== undefined &&
                                 formatWithCurrency(
                                   option.prices[idx],
@@ -224,7 +251,7 @@ const CartDrawer = () => {
                         </Button>
                       </div>
 
-                      <p className="text-sm font-medium mt-1">
+                      <p className="text-sm font-medium mt-2">
                         {formatWithCurrency(
                           item.totalPrice,
                           storeData.settings.currency
