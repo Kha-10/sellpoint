@@ -4,6 +4,7 @@ import { Menu, ShoppingCart } from "lucide-react";
 import { StoreData } from "@/lib/api";
 import { useCart } from "@/app/(store)/[store]/providers/CartContext";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 interface TopNavProps {
   setSidebarOpen: (open: boolean) => void;
@@ -22,24 +23,27 @@ export default function TopNav({ setSidebarOpen, storeData }: TopNavProps) {
         >
           <Menu className="h-5 w-5 text-gray-600 hover:text-gray-900" />
         </button>
-        <div className="hidden lg:flex items-center">
+        <Link
+          href={`/${storeData.slug}`}
+          className="hidden lg:flex items-center"
+        >
           <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center mr-3">
             <ShoppingCart className="h-5 w-5 text-gray-600" />
           </div>
           <h1 className="text-xl font-semibold text-gray-900">
             {storeData?.name}
           </h1>
-        </div>
+        </Link>
       </div>
 
-      <div className="lg:hidden flex items-center">
+      <Link href={`/${storeData.slug}`} className="lg:hidden flex items-center">
         <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center mr-2">
           <ShoppingCart className="h-5 w-5 text-gray-600" />
         </div>
         <h1 className="text-lg font-semibold text-gray-900">
           {storeData?.name}
         </h1>
-      </div>
+      </Link>
 
       <div className="flex items-center space-x-4">
         {/* <button className="p-2 text-gray-600 hover:text-gray-900 rounded-lg transition-colors">

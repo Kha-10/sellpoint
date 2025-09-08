@@ -606,8 +606,6 @@ const ProductDetail = ({
                 {/* Action Buttons */}
                 <div className="space-y-3 pt-6">
                   <Button
-                    // onClick={handleAddToCart}
-                    onClick={() => console.log("Submit button clicked")}
                     type="submit"
                     className="w-full bg-primary hover:bg-primary/90"
                     size="lg"
