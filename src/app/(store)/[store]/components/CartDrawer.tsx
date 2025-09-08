@@ -14,14 +14,39 @@ const CartDrawer = () => {
 
   if (!state.isOpen) return null;
 
-  const handleUpdateQuantity = (id: string, newQuantity: number) => {
-    if (newQuantity <= 0) {
-      dispatch({ type: "REMOVE_ITEM", payload: id });
-    } else {
-      dispatch({
-        type: "UPDATE_QUANTITY",
-        payload: { id, quantity: newQuantity },
+  const handleUpdateQuantity = async (
+    productId: string,
+    variantId: string,
+    newQuantity: number
+  ) => {
+    if (newQuantity < 1) return;
+    try {
+      const cartId = sessionStorage.getItem("guestCartId");
+      if (!cartId) throw new Error("Missing guestCartId");
+      const endpoint = `${process.env.NEXT_PUBLIC_API_URL}/api/public/stores/${storeData.slug}/cart/${cartId}`;
+      const res = await fetch(endpoint, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          productId,
+          variantId,
+          quantity: newQuantity,
+        }),
       });
+      if (res.status === 200) {
+        const response = await res.json();
+        console.log("response", response);
+
+        if (response.cart) {
+          const data = response.cart.items;
+          dispatch({
+            type: "ADD_ITEM",
+            payload: data,
+          });
+        }
+      }
+    } catch (error) {
+      console.error("❌ Failed to sync with Redis:", error);
     }
   };
 
@@ -126,7 +151,10 @@ const CartDrawer = () => {
                             <span key={idx} className="space-x-2 space-y-5">
                               {ans}
                               {option.prices?.[idx] !== undefined &&
-                                ` ${option.prices[idx]}`}
+                                formatWithCurrency(
+                                  option.prices[idx],
+                                  storeData.settings.currency
+                                )}
                               {option.quantities?.[idx] !== undefined &&
                                 ` x ${option.quantities[idx]}`}
                               {idx < option.answers!.length - 1 && ", "}
@@ -142,7 +170,11 @@ const CartDrawer = () => {
                             size="sm"
                             className="h-7 w-7 p-0"
                             onClick={() =>
-                              handleUpdateQuantity(item.id, item.quantity - 1)
+                              handleUpdateQuantity(
+                                item.productId,
+                                item.variantId,
+                                item.quantity - 1
+                              )
                             }
                           >
                             <Minus className="h-3 w-3" />
@@ -155,7 +187,11 @@ const CartDrawer = () => {
                             size="sm"
                             className="h-7 w-7 p-0"
                             onClick={() =>
-                              handleUpdateQuantity(item.id, item.quantity + 1)
+                              handleUpdateQuantity(
+                                item.productId,
+                                item.variantId,
+                                item.quantity + 1
+                              )
                             }
                           >
                             <Plus className="h-3 w-3" />
@@ -182,7 +218,7 @@ const CartDrawer = () => {
                       </div>
 
                       <p className="text-sm font-medium mt-1">
-                        ${item.totalPrice.toFixed(2)}
+                        {formatWithCurrency(item.totalPrice,storeData.settings.currency)}
                       </p>
                     </div>
                   </div>

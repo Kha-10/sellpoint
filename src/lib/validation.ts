@@ -16,15 +16,18 @@ export const FormSchema = z.object({
 
 export const validateForm = (product: Product) =>
   FormSchema.superRefine((data, ctx) => {
-    if (
-      !data.variantId ||
-      !product.variants?.some((v) => v._id === data.variantId)
-    ) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        path: ["variantId"],
-        message: "Product variant is required",
-      });
+    // Only validate variantId if product has variants
+    if (product.variants && product.variants.length > 0) {
+      if (
+        !data.variantId ||
+        !product.variants.some((v) => v._id === data.variantId)
+      ) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["variantId"],
+          message: "Product variant is required",
+        });
+      }
     }
 
     data.options.forEach((opt, optionIndex) => {
@@ -43,7 +46,6 @@ export const validateForm = (product: Product) =>
       // Min/Max rule
       const min = productOpt.settings?.min;
       const max = productOpt.settings?.max;
-
       if (min && opt.answers.length < min) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
@@ -51,7 +53,6 @@ export const validateForm = (product: Product) =>
           message: `Select at least ${min} option(s)`,
         });
       }
-
       if (max && opt.answers.length > max) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
@@ -61,5 +62,4 @@ export const validateForm = (product: Product) =>
       }
     });
   });
-
 export type FormValues = z.infer<typeof FormSchema>;
