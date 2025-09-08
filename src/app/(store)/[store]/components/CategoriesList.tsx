@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { StoreData, Category } from "@/lib/api";
+import { formatWithCurrency } from "@/helper/formatCurrency";
 
 interface CategoriesListProps {
   categories: Category[];
@@ -51,7 +52,10 @@ export default function CategoriesList({
                       {product.name}
                     </h3>
                     <p className="text-sm text-gray-600">
-                      {storeData?.settings.currency} {product.price}
+                      {formatWithCurrency(
+                        product.price,
+                        storeData?.settings.currency
+                      )}
                     </p>
                   </div>
                 </Link>
