@@ -282,7 +282,7 @@ const CartDrawer = () => {
               <div className="space-y-2">
                 <Button variant="default" className="w-full" asChild>
                   <Link
-                    href="/checkout"
+                    href={`/${storeData.slug}/checkout`}
                     onClick={() => dispatch({ type: "CLOSE_CART" })}
                   >
                     Checkout

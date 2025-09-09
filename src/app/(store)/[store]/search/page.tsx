@@ -31,7 +31,6 @@ export default async function Home({
     sortDirection: "asc",
     searchQuery: searchQuery,
   });
-
   return (
     <>
       <SearchPage
