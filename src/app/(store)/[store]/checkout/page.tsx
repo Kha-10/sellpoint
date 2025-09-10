@@ -34,7 +34,8 @@ export async function generateMetadata({
 export default async function CheckoutPage({ params }: PageProps) {
   const { store } = await params;
   const storeData = await getStoreData(store);
-
+  console.log(storeData);
+  
   if (!storeData) return <h1>Store Not Found</h1>;
 
   return <Checkout storeData={storeData} />;

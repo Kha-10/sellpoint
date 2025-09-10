@@ -81,7 +81,7 @@ interface Item
   > {
   productId: string;
   productName: string;
-  productinventory: number;
+  productinventory?: number;
   basePrice: number;
   totalPrice: number;
   quantity: number;

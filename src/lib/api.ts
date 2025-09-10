@@ -1,11 +1,33 @@
-interface StoreSettings {
-  payments: object;
-  shipping: object;
-  theme: { color: string; font: string };
-  notifications: object;
+interface Settings {
   currency: string;
-  timezone: string;
   language: string;
+  notifications: {
+    orderEmail: boolean;
+    stockSMS: boolean;
+  };
+  payments: {
+    bank: {
+      accountHolderName: string;
+      accountNumber: string;
+      bankName: string;
+      enabled: boolean;
+    };
+    cash: boolean;
+    promptPay: {
+      countryCode: string;
+      enabled: boolean;
+      phoneNumber: string;
+    };
+  };
+  shipping: {
+    defaultDeliveryDays: number;
+    freeShipping: boolean;
+  };
+  theme: {
+    color: string;
+    font: string;
+  };
+  timezone: string;
 }
 
 export interface StoreData {
@@ -15,7 +37,7 @@ export interface StoreData {
   phone: string;
   address: string;
   slug: string;
-  settings: StoreSettings;
+  settings: Settings;
   isActive: boolean;
   membershipType: string;
   membershipExpiresAt: string | null;

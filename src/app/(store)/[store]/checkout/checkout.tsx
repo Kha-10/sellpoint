@@ -154,6 +154,8 @@ const Checkout = ({ storeData }: { storeData: StoreData }) => {
   }
 
   const handlePlaceOrder = async () => {
+    console.log("state.items",state.items);
+    
     const customerData = customerForm.getValues();
     const paymentData = paymentForm.getValues();
 
@@ -391,8 +393,8 @@ const Checkout = ({ storeData }: { storeData: StoreData }) => {
               <div className="text-center space-y-4">
                 <div className="bg-muted p-6 rounded-lg">
                   <QrCode className="h-32 w-32 mx-auto text-muted-foreground mb-4" />
-                  <p className="font-medium">PromptPay Number: 012-345-6789</p>
-                  {/* <p className="text-2xl font-bold text-primary mt-2">${finalTotal.toFixed(2)}</p> */}
+                  <p className="font-medium">PromptPay Number : {storeData.settings.payments.promptPay.phoneNumber}</p>
+                  <p className="text-2xl font-bold text-primary mt-2">{formatWithCurrency(total,storeData.settings.currency)}</p>
                 </div>
                 <FormField
                   control={paymentForm.control}

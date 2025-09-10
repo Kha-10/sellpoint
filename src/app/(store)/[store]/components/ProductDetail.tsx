@@ -68,6 +68,8 @@ const ProductDetail = ({
   });
 
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
+    console.log("data", product);
+
     let total = 0;
 
     const variant = product.variants?.find((v) => v._id === data.variantId);
@@ -101,7 +103,10 @@ const ProductDetail = ({
           ? `${product.name} - ${variant.name}`
           : product.name,
         photo: product?.photo,
-        productinventory: product!.inventory!.quantity,
+        // productinventory: product!.inventory!.quantity,
+        ...(product.trackQuantityEnabled && {
+          productinventory: product!.inventory!.quantity,
+        }),
         basePrice,
         totalPrice: total,
         quantity: data.quantity,
