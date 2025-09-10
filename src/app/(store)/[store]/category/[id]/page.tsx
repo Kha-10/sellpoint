@@ -1,10 +1,10 @@
 import ProductList from "../../components/ProductList";
-import { getSingleCategoryData } from "@/lib/api";
+import { getSingleCategoryData, getProducts, getStoreData } from "@/lib/api";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import Pagination from "../../components/Pagination";
-import { getProducts } from "@/lib/api";
+import { Metadata } from "next";
 
 interface PageProps {
   params: Promise<{ id: string; store: string }>;
@@ -15,6 +15,31 @@ interface PageProps {
   }>;
 }
 
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
+  const { store, id } = await params;
+  const storeData = await getStoreData(store);
+
+  if (!storeData) {
+    return {
+      title: "Category - Store Not Found",
+      description: "This store could not be found. Please check the URL or visit our homepage.",
+    };
+  }
+
+  const categoryData = await getSingleCategoryData(id, store);
+
+  return {
+    title: `${categoryData?.name} - ${storeData.name} | Sell Point`,
+    openGraph: {
+      title: `${categoryData?.name} - ${storeData.name} | SellPoint`,
+      description: `Explore ${categoryData?.name} at ${storeData.name} online.`,
+      url: `${process.env.NEXT_DOMAIN}/${storeData.slug}`,
+    },
+  };
+}
+
 export default async function Page({ params, searchParams }: PageProps) {
   const { id, store } = await params;
   const categoryData = await getSingleCategoryData(id, store);
@@ -22,7 +47,6 @@ export default async function Page({ params, searchParams }: PageProps) {
   const resolvedSearch = await searchParams;
   const page = Number(resolvedSearch?.page) || 1;
   const searchQuery = resolvedSearch?.searchQuery || "";
-  console.log("categoriesFromParams", [id]);
 
   const products = await getProducts({
     slug: store,

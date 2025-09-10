@@ -21,9 +21,11 @@ export async function generateMetadata({
   }
 
   return {
-    title: `${storeData.name}`,
+    title: `${storeData.name} | Sell Point`,
     openGraph: {
-      title: storeData.name,
+      title: `Shop at ${storeData.name} – Browse Products Online`,
+      description: `Explore at ${storeData.name} online.`,
+      url: `${process.env.NEXT_DOMAIN }/${storeData.slug}`,
     },
   };
 }

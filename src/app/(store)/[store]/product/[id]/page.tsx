@@ -1,10 +1,37 @@
-import { getSingleProductData,getStoreData, StoreData } from "@/lib/api";
+import { getSingleProductData, getStoreData, StoreData } from "@/lib/api";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import ProductDetail from "../../components/ProductDetail";
+import { Metadata } from "next";
 
 interface PageProps {
   params: Promise<{ id: string; store: string }>;
+}
+
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
+  const { store, id } = await params;
+  const storeData = await getStoreData(store);
+
+  if (!storeData) {
+    return {
+      title: "Product - Store Not Found",
+      description:
+        "This store could not be found. Please check the URL or visit our homepage.",
+    };
+  }
+
+  const productData = await getSingleProductData(id, store);
+
+  return {
+    title: `${productData?.data?.name} - ${storeData.name} | Sell Point`,
+    openGraph: {
+      title: `${productData?.data?.name} - ${storeData.name} | SellPoint`,
+      description: `Explore ${productData?.data?.name} at ${storeData.name} online.`,
+      url: `${process.env.NEXT_DOMAIN}/${storeData.slug}`,
+    },
+  };
 }
 
 export default async function Page({ params }: PageProps) {
@@ -24,5 +51,5 @@ export default async function Page({ params }: PageProps) {
       </div>
     );
   }
-  return <ProductDetail storeData={storeData as StoreData} product ={product} />;
+  return <ProductDetail storeData={storeData as StoreData} product={product} />;
 }

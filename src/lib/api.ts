@@ -11,6 +11,7 @@ interface StoreSettings {
 export interface StoreData {
   _id: string;
   name: string;
+  email: string;
   phone: string;
   address: string;
   slug: string;
@@ -141,11 +142,113 @@ interface GetProductsParams {
   searchQuery?: string;
 }
 
+interface Customer {
+  name: string;
+  phone: string;
+  email: string;
+  deliveryAddress: {
+    street: string;
+    apartment: string;
+    city: string;
+    zipCode: string;
+  };
+  totalSpent: number;
+  storeId: string;
+  createdBy: string;
+  updatedBy: string;
+}
+
+interface Notes {
+  id: string;
+  author: string;
+  content: string;
+  createdAt: string;
+}
+
+interface PricingAdjustmentSchema {
+  id: string;
+  name: string;
+  type: "fee" | "discount" | "tax";
+  isPercentage: boolean;
+  value: number;
+}
+
+export interface OrderResponse {
+  _id: string;
+  createdAt: string;
+  updatedAt: string;
+  customer: Customer;
+  customerType: "guest" | "registered" | "manual";
+  deleted: boolean;
+  fulfillmentStatus: "Unfulfilled" | "Fulfilled" | "Ready" | "Out For Delivery";
+  imgUrls: string[];
+  invoiceNumber: string;
+  items: Array<{
+    _id: string;
+    id: string;
+    productId: string;
+    productName: string;
+    quantity: number;
+    totalPrice: number;
+    basePrice: number;
+    variantId: string;
+    trackQuantityEnabled: boolean;
+    productinventory: number;
+    cartMaximum: number;
+    cartMinimum: number;
+    categories: string[];
+    imgUrls: string[];
+    photo: string[];
+    options: Array<{
+      _id: string;
+      name: string;
+      answers: string | number[];
+      prices: number[];
+      quantities: number[];
+    }>;
+  }>;
+  manualCustomer: {
+    _id: string;
+    name: string;
+    phone: string;
+    email: string;
+    deliveryAddress: {
+      _id?: string;
+      fullAddress: string;
+      street: string;
+      apartment: string;
+      city: string;
+      zipCode: string;
+    };
+  };
+  notes: Notes[];
+  orderNumber: string;
+  orderStatus: "Pending" | "Confirmed" | "Completed" | "Cancelled";
+  paymentStatus:
+    | "Unpaid"
+    | "Paid"
+    | "Refunded"
+    | "Confirming Payment"
+    | "Partially Paid";
+  pricing: {
+    subtotal: number;
+    finalTotal: number;
+    adjustments: PricingAdjustmentSchema[];
+  };
+  recieptSlip: string;
+  storeId: string;
+}
+
+export type SingleOrderResponse = {
+  data?: OrderResponse;
+  error?: string;
+};
+
 export async function getStoreData(
   storeSlug: string
 ): Promise<StoreData | null> {
   try {
-    const res = await fetch(`http://localhost:8080/api/stores/${storeSlug}`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/stores/${storeSlug}`, {
       cache: "no-store", // avoid stale cache in dev
     });
 
@@ -256,6 +359,32 @@ export async function getSingleProductData(
     }
 
     const data: Product = await res.json();
+    return { data };
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      console.error("getSingleProductData error:", err.message);
+      return { error: err.message };
+    }
+    return { error: "Unknown error occurred" };
+  }
+}
+
+export async function getSingleOrderData(
+  id: string,
+  slug: string
+): Promise<SingleOrderResponse> {
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/public/stores/${slug}/orders/${id}`
+    );
+
+    if (!res.ok) {
+      const errorText = await res.text();
+      return { error: errorText || "Failed to fetch order" };
+    }
+
+    const data: OrderResponse = await res.json();
+
     return { data };
   } catch (err: unknown) {
     if (err instanceof Error) {

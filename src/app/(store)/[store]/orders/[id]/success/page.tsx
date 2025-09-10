@@ -3,6 +3,39 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
+import { getSingleOrderData, getStoreData } from "@/lib/api";
+import { formatWithCurrency } from "@/helper/formatCurrency";
+import { notFound } from "next/navigation";
+import { Metadata } from "next";
+
+interface PageProps {
+  params: Promise<{ store: string; id: string }>;
+}
+
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
+  const { store, id } = await params;
+  const storeData = await getStoreData(store);
+
+  if (!storeData) {
+    return {
+      title: "Order Success - Store Not Found",
+      description:
+        "This store could not be found. Please check the URL or visit our homepage.",
+    };
+  }
+
+  return {
+    title: `Order # ${id} - ${storeData.name} | Sell Point`,
+    description: `Thank you for shopping at ${storeData.name}. Your order has been placed successfully.`,
+    openGraph: {
+      title: `Order Success – ${storeData.name}`,
+      description: `Your order at ${storeData.name} was placed successfully.`,
+      url: `${process.env.NEXT_DOMAIN}/${storeData.slug}/checkout`,
+    },
+  };
+}
 
 export default async function OrderSuccess({
   params,
@@ -10,6 +43,16 @@ export default async function OrderSuccess({
   params: Promise<{ store: string; id: string }>;
 }) {
   const { store, id } = await params;
+  const storeData = await getStoreData(store);
+  if (!storeData) notFound();
+
+  const { data, error } = await getSingleOrderData(id, store);
+
+  if (error) {
+    console.error(error);
+  } else {
+    console.log(data);
+  }
 
   if (!id) {
     return (
@@ -30,7 +73,12 @@ export default async function OrderSuccess({
       </div>
     );
   }
-  
+
+  if (!data) return <p>No order data</p>;
+
+  if (error) {
+    return <p>{error}</p>;
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -61,7 +109,7 @@ export default async function OrderSuccess({
                 <div className="flex justify-between items-center">
                   <span className="font-semibold">Order Number:</span>
                   <span className="text-lg font-mono font-bold text-primary">
-                    #{1}
+                    #{data?.orderNumber}
                   </span>
                 </div>
 
@@ -71,15 +119,52 @@ export default async function OrderSuccess({
                 <div>
                   <h4 className="font-semibold mb-3">Items Ordered:</h4>
                   <div className="space-y-2">
-                    {/* {items?.map((item: any) => (
-                      <div key={item.id} className="flex justify-between items-center text-sm">
+                    {data?.items?.map((item) => (
+                      <div
+                        key={item._id}
+                        className="flex justify-between items-center text-sm"
+                      >
                         <div>
-                          <span className="font-medium">{item.product.name}</span>
-                          <span className="text-muted-foreground ml-2">x{item.quantity}</span>
+                          <span className="font-medium">
+                            {item.productName}
+                          </span>
+                          <span className="text-muted-foreground ml-2">
+                            x{item.quantity}
+                          </span>
+                          {item.options.map((option, i) => (
+                            <div
+                              key={i}
+                              className="text-xs text-muted-foreground mt-1 space-x-1 mb-1"
+                            >
+                              {option.name} :{" "}
+                              {Array.isArray(option.answers) &&
+                                option.answers.map((ans, idx) => (
+                                  <span
+                                    key={idx}
+                                    className="space-x-2 space-y-5"
+                                  >
+                                    {ans}{" "}
+                                    {option.prices?.[idx] !== undefined &&
+                                      formatWithCurrency(
+                                        option.prices[idx],
+                                        storeData.settings.currency
+                                      )}
+                                    {option.quantities?.[idx] !== undefined &&
+                                      ` x ${option.quantities[idx]}`}
+                                    {idx < option.answers.length - 1 && ", "}
+                                  </span>
+                                ))}
+                            </div>
+                          ))}
                         </div>
-                        <span className="font-semibold">${item.totalPrice.toFixed(2)}</span>
+                        <span className="font-semibold">
+                          {formatWithCurrency(
+                            item.totalPrice,
+                            storeData?.settings?.currency
+                          )}
+                        </span>
                       </div>
-                    ))} */}
+                    ))}
                   </div>
                 </div>
 
@@ -87,7 +172,12 @@ export default async function OrderSuccess({
 
                 <div className="flex justify-between items-center text-lg font-bold">
                   <span>Total Paid:</span>
-                  {/* <span className="text-primary">${orderTotal?.toFixed(2)}</span> */}
+                  <span className="text-primary">
+                    {formatWithCurrency(
+                      data.pricing.finalTotal,
+                      storeData?.settings?.currency
+                    )}
+                  </span>
                 </div>
               </div>
             </CardContent>
@@ -103,11 +193,39 @@ export default async function OrderSuccess({
             </CardHeader>
             <CardContent>
               <div className="space-y-2 text-sm">
-                {/* <p><strong>Name:</strong> {customerInfo?.name}</p>
-                <p><strong>Phone:</strong> {customerInfo?.phone}</p>
-                <p><strong>Email:</strong> {customerInfo?.email}</p>
-                <p><strong>Address:</strong> {customerInfo?.address}</p>
-                <p><strong>Payment Method:</strong> {paymentInfo?.method === 'promptpay' ? 'PromptPay' : 'Credit/Debit Card'}</p> */}
+                <p>
+                  <strong>Name:</strong>{" "}
+                  {(data.customer && data.customer.name) ||
+                    data.manualCustomer.name}
+                </p>
+                <p>
+                  <strong>Phone:</strong>{" "}
+                  {(data.customer && data.customer.phone) ||
+                    data.manualCustomer.phone}
+                </p>
+                <p>
+                  <strong>Email:</strong>{" "}
+                  {(data.customer && data.customer.email) ||
+                    data.manualCustomer.email}
+                </p>
+                <p>
+                  <strong>Address:</strong>{" "}
+                  {data.customer?.deliveryAddress?.street}
+                  {data.customer?.deliveryAddress?.city}
+                  {data.customer?.deliveryAddress?.apartment}
+                  {data.customer?.deliveryAddress?.zipCode}
+                  {data.manualCustomer?.deliveryAddress?.street}
+                  {data.manualCustomer?.deliveryAddress?.city}
+                  {data.manualCustomer?.deliveryAddress?.apartment}
+                  {data.manualCustomer?.deliveryAddress?.zipCode ||
+                    data.manualCustomer?.deliveryAddress?.fullAddress}
+                </p>
+                {/* <p>
+                  <strong>Payment Method:</strong>{" "}
+                  {paymentInfo?.method === "promptpay"
+                    ? "PromptPay"
+                    : "Credit/Debit Card"}
+                </p> */}
               </div>
             </CardContent>
           </Card>
@@ -128,7 +246,7 @@ export default async function OrderSuccess({
                   <div>
                     <p className="font-semibold">Phone Support</p>
                     <p className="text-sm text-muted-foreground">
-                      +1 (555) 123-4567
+                      {storeData.phone}
                     </p>
                   </div>
                 </div>
@@ -136,9 +254,11 @@ export default async function OrderSuccess({
                   <Mail className="h-5 w-5 text-primary" />
                   <div>
                     <p className="font-semibold">Email Support</p>
-                    <p className="text-sm text-muted-foreground">
-                      support@artisan.com
-                    </p>
+                    {storeData.email && (
+                      <p className="text-sm text-muted-foreground">
+                        {storeData.email}
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>
@@ -149,17 +269,20 @@ export default async function OrderSuccess({
           <Card className="bg-muted/50">
             <CardContent className="pt-6">
               <div className="text-center">
-                {/* <h3 className="font-serif text-lg font-semibold mb-2">What's Next?</h3> */}
-                {/* <p className="text-sm text-muted-foreground mb-4">
-                  We'll send you an email confirmation shortly with tracking information. 
-                  Your artisan products will be carefully prepared and delivered within 2-3 business days.
-                </p> */}
+                <h3 className="font-serif text-lg font-semibold mb-2">
+                  What&apos;s Next?
+                </h3>
+                <p className="text-sm text-muted-foreground mb-4">
+                  We&apos;ll send you an email confirmation shortly.
+                </p>
                 <div className="flex gap-3 justify-center">
                   <Button asChild variant="outline">
-                    {/* <Link to="/shop">Continue Shopping</Link> */}
+                    <Link href={`/${storeData.slug}/search`}>
+                      Continue Shopping
+                    </Link>
                   </Button>
                   <Button asChild>
-                    {/* <Link to="/">Return Home</Link> */}
+                    <Link href={`/${storeData.slug}`}>Return Home</Link>
                   </Button>
                 </div>
               </div>

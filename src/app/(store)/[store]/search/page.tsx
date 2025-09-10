@@ -1,6 +1,32 @@
 import { getStoreData, getProducts } from "@/lib/api";
 import SearchPage from "../components/search";
 import { notFound } from "next/navigation";
+import { Metadata } from "next";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ store: string }>;
+}): Promise<Metadata> {
+  const { store } = await params;
+  const storeData = await getStoreData(store);
+
+  if (!storeData) {
+    return {
+      title: "Search - Store Not Found",
+      description: "This store could not be found. Please check the URL or visit our homepage.",
+    };
+  }
+
+  return {
+    title: `search - ${storeData.name} | Sell Point`,
+    openGraph: {
+      title: `Shop at ${storeData.name} | Browse Products Online`,
+      description: `Explore products at ${storeData.name} online.`,
+      url: `${process.env.NEXT_DOMAIN }/${storeData.slug}`,
+    },
+  };
+}
 
 export default async function Home({
   params,
