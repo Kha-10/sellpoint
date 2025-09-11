@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -12,6 +12,7 @@ import {
   ArrowRight,
   Trash2,
   Home,
+  Banknote,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -47,7 +48,7 @@ const customerInfoSchema = z.object({
 
 const paymentInfoSchema = z
   .object({
-    method: z.enum(["promptpay", "stripe"]),
+    method: z.enum(["promptpay", "stripe", "cash"]),
     cardNumber: z.string().optional(),
     expiry: z.string().optional(),
     cvv: z.string().optional(),
@@ -123,6 +124,16 @@ const Checkout = ({ storeData }: { storeData: StoreData }) => {
     },
   });
 
+  useEffect(() => {
+    if (storeData.settings.payments.cash) {
+      paymentForm.setValue("method", "cash");
+    } else if (storeData.settings.payments.bank.enabled) {
+      paymentForm.setValue("method", "stripe");
+    } else if (storeData.settings.payments.promptPay.enabled) {
+      paymentForm.setValue("method", "promptpay");
+    }
+  }, [storeData, paymentForm]);
+
   // const deliveryFee = 5.0;
   // const tax = state.total * 0.1;
   // const finalTotal = state.total + deliveryFee + tax;
@@ -194,7 +205,11 @@ const Checkout = ({ storeData }: { storeData: StoreData }) => {
 
       if (res.status === 200) {
         const response = await res.json();
-        if (response && paymentData.paymentSlip) {
+        if (
+          response &&
+          paymentData.method === "promptpay" &&
+          paymentData.paymentSlip
+        ) {
           const file = paymentData.paymentSlip;
 
           if (file) {
@@ -373,26 +388,42 @@ const Checkout = ({ storeData }: { storeData: StoreData }) => {
                       value={field.value}
                       className="mb-6"
                     >
-                      <div className="flex items-center space-x-2 p-4 border rounded-lg">
-                        <RadioGroupItem value="promptpay" id="promptpay" />
-                        <FormLabel
-                          htmlFor="promptpay"
-                          className="flex items-center gap-2 cursor-pointer"
-                        >
-                          <QrCode className="h-5 w-5" />
-                          PromptPay
-                        </FormLabel>
-                      </div>
-                      <div className="flex items-center space-x-2 p-4 border rounded-lg">
-                        <RadioGroupItem value="stripe" id="stripe" />
-                        <FormLabel
-                          htmlFor="stripe"
-                          className="flex items-center gap-2 cursor-pointer"
-                        >
-                          <CreditCard className="h-5 w-5" />
-                          Credit/Debit Card
-                        </FormLabel>
-                      </div>
+                      {storeData.settings.payments.cash && (
+                        <div className="flex items-center space-x-2 p-4 border rounded-lg">
+                          <RadioGroupItem value="cash" id="cash" />
+                          <FormLabel
+                            htmlFor="cash"
+                            className="flex items-center gap-2 cursor-pointer"
+                          >
+                            <Banknote className="h-5 w-5" />
+                            Cash on Delivery
+                          </FormLabel>
+                        </div>
+                      )}
+                      {storeData.settings.payments.promptPay.enabled && (
+                        <div className="flex items-center space-x-2 p-4 border rounded-lg">
+                          <RadioGroupItem value="promptpay" id="promptpay" />
+                          <FormLabel
+                            htmlFor="promptpay"
+                            className="flex items-center gap-2 cursor-pointer"
+                          >
+                            <QrCode className="h-5 w-5" />
+                            PromptPay
+                          </FormLabel>
+                        </div>
+                      )}
+                      {storeData.settings.payments.bank.enabled && (
+                        <div className="flex items-center space-x-2 p-4 border rounded-lg">
+                          <RadioGroupItem value="stripe" id="stripe" />
+                          <FormLabel
+                            htmlFor="stripe"
+                            className="flex items-center gap-2 cursor-pointer"
+                          >
+                            <CreditCard className="h-5 w-5" />
+                            Credit/Debit Card
+                          </FormLabel>
+                        </div>
+                      )}
                     </RadioGroup>
                   </FormControl>
                   <FormMessage />
@@ -656,7 +687,7 @@ const Checkout = ({ storeData }: { storeData: StoreData }) => {
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="mb-8">
           <h1 className="text-3xl font-serif font-bold text-foreground mb-2">
-            <Button variant="ghost" size="sm" onClick={clearAll}>
+            <Button variant="ghost" size="icon" onClick={clearAll}>
               <Home className="h-7 w-7" />
             </Button>
             Checkout
