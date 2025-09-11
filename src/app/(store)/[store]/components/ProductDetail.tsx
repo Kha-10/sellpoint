@@ -126,7 +126,6 @@ const ProductDetail = ({
     );
     if (res.status === 200) {
       const response = await res.json();
-      console.log("response", response.cart.items);
       sessionStorage.setItem("guestCartId", response.cart.id);
       const data = response.cart.items;
       dispatch({
@@ -134,6 +133,11 @@ const ProductDetail = ({
         payload: data,
       });
       dispatch({ type: "OPEN_CART" });
+    } else {
+      const response = await res.json();
+      if (!res.ok) {
+        alert(response.msg);
+      }
     }
   };
 
@@ -528,10 +532,14 @@ const ProductDetail = ({
                       <h3 className="text-lg font-serif font-semibold">
                         Variants
                       </h3>
-                      {product.inventory!.quantity <= 5 && (
-                        <Badge variant="secondary">
-                          {product.inventory!.quantity} left
-                        </Badge>
+                      {product.inventory!.quantity > 0 &&
+                        product.inventory!.quantity <= 5 && (
+                          <Badge variant="secondary">
+                            {product.inventory!.quantity} left
+                          </Badge>
+                        )}
+                      {product.inventory!.quantity <= 0 && (
+                        <Badge variant="secondary">Sold Out</Badge>
                       )}
                     </div>
                     <div className="space-y-6">
@@ -609,13 +617,21 @@ const ProductDetail = ({
                 </div>
 
                 {/* Action Buttons */}
+
                 <div className="space-y-3 pt-6">
                   <Button
+                    disabled={
+                      product.trackQuantityEnabled &&
+                      product.inventory!.quantity <= 0
+                    }
                     type="submit"
                     className="w-full bg-primary hover:bg-primary/90"
                     size="lg"
                   >
-                    Add to Cart
+                    {product.trackQuantityEnabled &&
+                    product.inventory!.quantity <= 0
+                      ? "Sold Out"
+                      : "Add to Cart"}
                   </Button>
                   {/* <Button variant="outline" className="w-full" size="lg">
                 Buy Now

@@ -17,7 +17,7 @@ export default function NavigationLayout({
   const pathname = usePathname();
 
   // decide if we should hide the sidebar
-  const hideSidebar = pathname.startsWith("/story-appetizers/product/");
+ const hideSidebar = pathname.startsWith(`/${storeData.slug}/product/`) || pathname.startsWith(`/${storeData.slug}/checkout`) || pathname.startsWith(`/${storeData.slug}/orders/`) 
 
   return (
     <CartProvider>

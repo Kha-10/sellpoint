@@ -288,14 +288,6 @@ const CartDrawer = () => {
                     Checkout
                   </Link>
                 </Button>
-                <Button variant="outline" className="w-full" asChild>
-                  <Link
-                    href="/cart"
-                    onClick={() => dispatch({ type: "CLOSE_CART" })}
-                  >
-                    View Cart
-                  </Link>
-                </Button>
                 <Button
                   variant="ghost"
                   className="w-full"

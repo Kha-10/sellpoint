@@ -11,6 +11,7 @@ import {
   ChevronLeft,
   ArrowRight,
   Trash2,
+  Home,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -154,8 +155,6 @@ const Checkout = ({ storeData }: { storeData: StoreData }) => {
   }
 
   const handlePlaceOrder = async () => {
-    console.log("state.items",state.items);
-    
     const customerData = customerForm.getValues();
     const paymentData = paymentForm.getValues();
 
@@ -188,6 +187,10 @@ const Checkout = ({ storeData }: { storeData: StoreData }) => {
         headers: headers,
         body: JSON.stringify(orderData),
       });
+      const response = await res.json();
+      if (!res.ok) {
+        throw new Error(response.msg);
+      }
 
       if (res.status === 200) {
         const response = await res.json();
@@ -223,12 +226,20 @@ const Checkout = ({ storeData }: { storeData: StoreData }) => {
         dispatch({ type: "CLEAR_CART" });
         router.push(`/${storeData.slug}/orders/${response._id}/success`);
       }
-    } catch (error) {
-      console.error("Error handling order:", error);
+    } catch (error: unknown) {
       setLoading(false);
+      if (error instanceof Error) {
+        console.error("getCateogryData error:", error.message);
+        alert(error.message);
+      }
     } finally {
       setLoading(false);
     }
+  };
+
+  const clearAll = () => {
+    sessionStorage.removeItem("idempotencyKey");
+    router.push(`/${storeData.slug}`);
   };
 
   const renderStepIndicator = () => (
@@ -393,8 +404,13 @@ const Checkout = ({ storeData }: { storeData: StoreData }) => {
               <div className="text-center space-y-4">
                 <div className="bg-muted p-6 rounded-lg">
                   <QrCode className="h-32 w-32 mx-auto text-muted-foreground mb-4" />
-                  <p className="font-medium">PromptPay Number : {storeData.settings.payments.promptPay.phoneNumber}</p>
-                  <p className="text-2xl font-bold text-primary mt-2">{formatWithCurrency(total,storeData.settings.currency)}</p>
+                  <p className="font-medium">
+                    PromptPay Number :{" "}
+                    {storeData.settings.payments.promptPay.phoneNumber}
+                  </p>
+                  <p className="text-2xl font-bold text-primary mt-2">
+                    {formatWithCurrency(total, storeData.settings.currency)}
+                  </p>
                 </div>
                 <FormField
                   control={paymentForm.control}
@@ -640,6 +656,9 @@ const Checkout = ({ storeData }: { storeData: StoreData }) => {
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="mb-8">
           <h1 className="text-3xl font-serif font-bold text-foreground mb-2">
+            <Button variant="ghost" size="sm" onClick={clearAll}>
+              <Home className="h-7 w-7" />
+            </Button>
             Checkout
           </h1>
           <p className="text-muted-foreground">
