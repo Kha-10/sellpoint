@@ -532,13 +532,13 @@ const ProductDetail = ({
                       <h3 className="text-lg font-serif font-semibold">
                         Variants
                       </h3>
-                      {product.inventory!.quantity > 0 &&
+                      {product.trackQuantityEnabled && product.inventory!.quantity > 0 &&
                         product.inventory!.quantity <= 5 && (
                           <Badge variant="secondary">
                             {product.inventory!.quantity} left
                           </Badge>
                         )}
-                      {product.inventory!.quantity <= 0 && (
+                      {product.trackQuantityEnabled && product.inventory!.quantity <= 0 && (
                         <Badge variant="secondary">Sold Out</Badge>
                       )}
                     </div>

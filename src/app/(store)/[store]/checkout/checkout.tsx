@@ -204,12 +204,7 @@ const Checkout = ({ storeData }: { storeData: StoreData }) => {
       }
 
       if (res.status === 200) {
-        const response = await res.json();
-        if (
-          response &&
-          paymentData.method === "promptpay" &&
-          paymentData.paymentSlip
-        ) {
+        if (paymentData.method === "promptpay" && paymentData.paymentSlip) {
           const file = paymentData.paymentSlip;
 
           if (file) {
