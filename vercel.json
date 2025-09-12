@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/stores/:path*",
+      "destination": "https://sellpoint.nexoradigital.site/"
+    }
+  ]
+}
