@@ -627,7 +627,7 @@ const Checkout = ({ storeData }: { storeData: StoreData }) => {
           <p className="text-sm capitalize">
             {paymentForm.getValues().method === "promptpay"
               ? "PromptPay"
-              : "Credit/Debit Card"}
+              : "Cash"}
           </p>
         </div>
 
