@@ -99,7 +99,7 @@ export default function Sidebar({
             )}
           </div>
 
-          <div className="flex items-center text-gray-700 hover:text-gray-900 hover:bg-gray-100 p-2 hover:rounded-md cursor-pointer">
+          {/* <div className="flex items-center text-gray-700 hover:text-gray-900 hover:bg-gray-100 p-2 hover:rounded-md cursor-pointer">
             <Plus className="h-4 w-4 mr-2" />
             <span className="text-sm">Add to Home Screen</span>
           </div>
@@ -107,7 +107,7 @@ export default function Sidebar({
           <div className="flex items-center text-gray-700 hover:text-gray-900 hover:bg-gray-100 p-2 rounded-md cursor-pointer">
             <Share className="h-4 w-4 mr-2" />
             <span className="text-sm">Share</span>
-          </div>
+          </div> */}
 
           {/* <div className="flex items-center text-gray-700 hover:text-gray-900 cursor-pointer">
             <Globe className="h-4 w-4 mr-2" />
