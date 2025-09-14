@@ -466,6 +466,12 @@ const ProductDetail = ({
     );
   };
 
+  const quantity = form.watch("quantity") ?? 1; // default to 1 if undefined
+  const isSoldOut =
+    product.trackQuantityEnabled &&
+    (product.inventory!.quantity <= 0 ||
+      quantity > product.inventory!.quantity);
+
   return (
     <div className="max-w-5xl mx-auto px-5 min-h-screen bg-white relative">
       <div className="w-full mx-auto p-4 lg:p-6 min-h-screen">
@@ -500,15 +506,13 @@ const ProductDetail = ({
           <div className="space-y-6">
             <div>
               <div className="mb-2">
-                {product.categories!.length > 0 &&
-                  product.categories!.map((category) => (
-                    <span
-                      key={category._id}
-                      className="text-sm text-muted-foreground font-medium uppercase tracking-wider"
-                    >
-                      {category.name}
-                    </span>
-                  ))}
+                {product.categories && product.categories.length > 0 && (
+                  <span className="text-sm text-muted-foreground font-medium uppercase tracking-wider">
+                    {product.categories
+                      .map((category) => category.name)
+                      .join(", ")}
+                  </span>
+                )}
               </div>
               <h1 className="text-3xl font-serif font-bold text-foreground mb-4">
                 {product.name}
@@ -532,15 +536,17 @@ const ProductDetail = ({
                       <h3 className="text-lg font-serif font-semibold">
                         Variants
                       </h3>
-                      {product.trackQuantityEnabled && product.inventory!.quantity > 0 &&
+                      {product.trackQuantityEnabled &&
+                        product.inventory!.quantity > 0 &&
                         product.inventory!.quantity <= 5 && (
                           <Badge variant="secondary">
                             {product.inventory!.quantity} left
                           </Badge>
                         )}
-                      {product.trackQuantityEnabled && product.inventory!.quantity <= 0 && (
-                        <Badge variant="secondary">Sold Out</Badge>
-                      )}
+                      {product.trackQuantityEnabled &&
+                        product.inventory!.quantity <= 0 && (
+                          <Badge variant="secondary">Sold Out</Badge>
+                        )}
                     </div>
                     <div className="space-y-6">
                       {product.variants.length > 0 && (
@@ -620,18 +626,12 @@ const ProductDetail = ({
 
                 <div className="space-y-3 pt-6">
                   <Button
-                    disabled={
-                      product.trackQuantityEnabled &&
-                      product.inventory!.quantity <= 0
-                    }
+                    disabled={isSoldOut}
                     type="submit"
                     className="w-full bg-primary hover:bg-primary/90"
                     size="lg"
                   >
-                    {product.trackQuantityEnabled &&
-                    product.inventory!.quantity <= 0
-                      ? "Sold Out"
-                      : "Add to Cart"}
+                    {isSoldOut ? "Sold Out" : "Add to Cart"}
                   </Button>
                   {/* <Button variant="outline" className="w-full" size="lg">
                 Buy Now
