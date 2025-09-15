@@ -118,11 +118,19 @@ export default function Sidebar({
 
         <div className="px-4 py-8">
           <Button
+            asChild
             variant="outline"
+            type="button"
             className="w-full justify-start text-sm bg-transparent hover:bg-gray-100"
           >
-            <Plus className="h-4 w-4 mr-2" />
-            Create your SellPoint App
+            <a
+              href={process.env.NEXT_PUBLIC_ADMIN_DOMAIN}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Create your SellPoint App
+            </a>
           </Button>
         </div>
       </div>
