@@ -10,18 +10,6 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  async rewrites() {
-    return [
-      {
-        source: "/stores/:path*",
-        destination: "https://admin-sellpoint.vercel.app/stores/:path*",
-      },
-      {
-        source: "/sign-in",
-        destination: "https://admin-sellpoint.vercel.app/sign-in",
-      },
-    ];
-  },
 };
 
 export default nextConfig;
