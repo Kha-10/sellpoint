@@ -16,6 +16,10 @@ const nextConfig: NextConfig = {
         source: "/stores/:path*",
         destination: "https://admin-sellpoint.vercel.app/stores/:path*",
       },
+      {
+        source: "/sign-in",
+        destination: "https://admin-sellpoint.vercel.app/sign-in",
+      },
     ];
   },
 };
