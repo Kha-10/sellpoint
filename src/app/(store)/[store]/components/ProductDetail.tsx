@@ -170,14 +170,26 @@ const ProductDetail = ({
                       >
                         <div className="flex items-center space-x-6">
                           <span>{variant.name}</span>
-                          {product.inventory!.quantity <= 5 && (
+                          {/* {product.inventory!.quantity <= 5 && (
                             <Badge variant="secondary">
                               {product.inventory!.quantity} left
                             </Badge>
                           )}
                           {isSoldOut && (
                             <Badge variant="secondary">Sold out</Badge>
-                          )}
+                          )} */}
+                          {product.trackQuantityEnabled &&
+                            product.inventory!.quantity > 0 &&
+                            product.inventory!.quantity <= 5 &&
+                            !isSoldOut && (
+                              <Badge variant="secondary">
+                                {product.inventory!.quantity} left
+                              </Badge>
+                            )}
+                          {product.trackQuantityEnabled &&
+                            product.inventory!.quantity <= 0 && (
+                              <Badge variant="secondary">Sold Out</Badge>
+                            )}
                         </div>
                         <span className="text-muted-foreground">
                           {formatWithCurrency(
@@ -541,18 +553,6 @@ const ProductDetail = ({
                       <h3 className="text-lg font-serif font-semibold">
                         Variants
                       </h3>
-                      {product.trackQuantityEnabled &&
-                        product.inventory!.quantity > 0 &&
-                        product.inventory!.quantity <= 5 &&
-                        !isSoldOut && (
-                          <Badge variant="secondary">
-                            {product.inventory!.quantity} left
-                          </Badge>
-                        )}
-                      {product.trackQuantityEnabled &&
-                        product.inventory!.quantity <= 0 && (
-                          <Badge variant="secondary">Sold Out</Badge>
-                        )}
                     </div>
                     <div className="space-y-6">
                       {product.variants.length > 0 && (
@@ -571,7 +571,9 @@ const ProductDetail = ({
                     </div>
                   </div>
                 )}
-                {product.trackQuantityEnabled &&
+                {product.variants &&
+                  product.variants.length == 0 &&
+                  product.trackQuantityEnabled &&
                   product.inventory!.quantity > 0 &&
                   product.inventory!.quantity <= 5 &&
                   !isSoldOut && (
