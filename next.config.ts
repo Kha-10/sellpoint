@@ -10,6 +10,14 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  async rewrites() {
+    return [
+      {
+        source: "/stores/:path*",
+        destination: "https://sellpoint.nexoradigital.site/stores/:path*",
+      },
+    ];
+  },
 };
 
 export default nextConfig;
