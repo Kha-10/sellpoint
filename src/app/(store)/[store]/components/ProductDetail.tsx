@@ -149,45 +149,50 @@ const ProductDetail = ({
         <FormField
           control={form.control}
           name="variantId"
-          render={({ field }) => (
-            <FormItem className="space-y-3">
-              <FormControl>
-                <RadioGroup
-                  value={field.value || ""}
-                  onValueChange={field.onChange}
-                >
-                  <FormItem
-                    key={variant._id}
-                    className="flex items-center space-x-2"
+          render={({ field }) => {
+            return (
+              <FormItem className="space-y-3">
+                <FormControl>
+                  <RadioGroup
+                    value={field.value || ""}
+                    onValueChange={field.onChange}
                   >
-                    <FormControl>
-                      <RadioGroupItem value={variant._id} id={variant._id} />
-                    </FormControl>
-                    <FormLabel
-                      htmlFor={variant._id}
-                      className="flex-1 flex justify-between"
+                    <FormItem
+                      key={variant._id}
+                      className="flex items-center space-x-2"
                     >
-                      <div className="flex items-center space-x-6">
-                        <span>{variant.name}</span>
-                        {/* {product.inventory!.quantity <= 5 && (
-                          <Badge variant="secondary">
-                            {product.inventory!.quantity} left
-                          </Badge>
-                        )} */}
-                      </div>
-                      <span className="text-muted-foreground">
-                        {formatWithCurrency(
-                          variant.price ?? variant.originalPrice ?? 0,
-                          storeData?.settings?.currency ?? "USD"
-                        )}
-                      </span>
-                    </FormLabel>
-                  </FormItem>
-                </RadioGroup>
-              </FormControl>
-              {/* <FormMessage /> */}
-            </FormItem>
-          )}
+                      <FormControl>
+                        <RadioGroupItem value={variant._id} id={variant._id} />
+                      </FormControl>
+                      <FormLabel
+                        htmlFor={variant._id}
+                        className="flex-1 flex justify-between"
+                      >
+                        <div className="flex items-center space-x-6">
+                          <span>{variant.name}</span>
+                          {product.inventory!.quantity <= 5 && (
+                            <Badge variant="secondary">
+                              {product.inventory!.quantity} left
+                            </Badge>
+                          )}
+                          {isSoldOut && (
+                            <Badge variant="secondary">Sold out</Badge>
+                          )}
+                        </div>
+                        <span className="text-muted-foreground">
+                          {formatWithCurrency(
+                            variant.price ?? variant.originalPrice ?? 0,
+                            storeData?.settings?.currency ?? "USD"
+                          )}
+                        </span>
+                      </FormLabel>
+                    </FormItem>
+                  </RadioGroup>
+                </FormControl>
+                {/* <FormMessage /> */}
+              </FormItem>
+            );
+          }}
         />
       </div>
     );
