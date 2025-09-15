@@ -14,7 +14,7 @@ const nextConfig: NextConfig = {
     return [
       {
         source: "/stores/:path*",
-        destination: "https://sellpoint.nexoradigital.site/stores/:path*",
+        destination: "https://admin-sellpoint.vercel.app/stores/:path*",
       },
     ];
   },
