@@ -10,7 +10,7 @@ const Footer = () => {
               <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
                 <ShoppingCart className="w-5 h-5 text-primary-foreground" />
               </div>
-              <span className="text-xl font-bold">StoreBuilder</span>
+              <span className="text-xl font-bold">Sellpoint</span>
             </div>
             <p className="text-muted-foreground text-sm leading-relaxed">
               The complete platform for building and managing your online store.
