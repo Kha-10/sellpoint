@@ -155,13 +155,15 @@ const page = () => {
               </h2>
               <p className="text-xl text-muted-foreground text-pretty leading-relaxed">
                 Every customer receives a unique, branded storefront with their
-                own custom domain. Build trust and credibility with professional
-                URLs that reflect their brand.
+                own pathname under the platform. Build trust and credibility
+                with professional URLs that reflect their brand.
               </p>
               <div className="space-y-3">
                 <div className="flex items-center space-x-3">
                   <Check className="w-5 h-5 text-primary" />
-                  <span>Custom domain mapping</span>
+                  <span>
+                    Unique store pathnames(e.g.,nexoradigital.net/brandname)
+                  </span>
                 </div>
                 <div className="flex items-center space-x-3">
                   <Check className="w-5 h-5 text-primary" />
