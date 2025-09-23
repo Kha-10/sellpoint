@@ -162,7 +162,7 @@ const page = () => {
                 <div className="flex items-center space-x-3">
                   <Check className="w-5 h-5 text-primary" />
                   <span>
-                    Unique store pathnames(e.g.,nexoradigital.net/brandname)
+                    Unique store pathnames(e.g.,www.nexoradigital.site/brandname)
                   </span>
                 </div>
                 <div className="flex items-center space-x-3">
@@ -183,7 +183,7 @@ const page = () => {
                     <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
                     <div className="w-3 h-3 bg-green-500 rounded-full"></div>
                     <div className="flex-1 bg-muted rounded px-3 py-1 text-sm text-muted-foreground">
-                      www.nexoradigital.site/shop1
+                      www.nexoradigital.site/boutique-fashion-store
                     </div>
                   </div>
                   <div className="text-sm text-muted-foreground">
@@ -198,7 +198,7 @@ const page = () => {
                     <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
                     <div className="w-3 h-3 bg-green-500 rounded-full"></div>
                     <div className="flex-1 bg-muted rounded px-3 py-1 text-sm text-muted-foreground">
-                      www.nexoradigital.site/shop2
+                      www.nexoradigital.site/tech-gadgets-hub
                     </div>
                   </div>
                   <div className="text-sm text-muted-foreground">
@@ -213,7 +213,7 @@ const page = () => {
                     <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
                     <div className="w-3 h-3 bg-green-500 rounded-full"></div>
                     <div className="flex-1 bg-muted rounded px-3 py-1 text-sm text-muted-foreground">
-                      www.nexoradigital.site/shop3
+                      www.nexoradigital.site/artisan-crafts-market
                     </div>
                   </div>
                   <div className="text-sm text-muted-foreground">
