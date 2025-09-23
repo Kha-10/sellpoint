@@ -1,41 +1,68 @@
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Instagram, Youtube, Twitter } from "lucide-react";
+import { ShoppingCart } from "lucide-react";
 
 const Footer = () => {
   return (
-    <footer className="bg-background border-t border-border mt-8 md:mt-16">
-      <div className="container mx-auto px-4 py-8 md:py-12">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
-          {/* Quick Links */}
-          <div>
-            <h3 className="font-semibold text-foreground mb-3 md:mb-4 text-sm md:text-base">Quick links</h3>
-            <div className="space-y-1 md:space-y-2">
-              <p className="text-muted-foreground hover:text-primary cursor-pointer text-sm transition-colors">Search</p>
-              <p className="text-muted-foreground hover:text-primary cursor-pointer text-sm transition-colors">Shop</p>
-              <p className="text-muted-foreground hover:text-primary cursor-pointer text-sm transition-colors">Contact</p>
+    <footer className="border-t border-border/40 py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="space-y-4">
+            <div className="flex items-center space-x-2">
+              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+                <ShoppingCart className="w-5 h-5 text-primary-foreground" />
+              </div>
+              <span className="text-xl font-bold">StoreBuilder</span>
             </div>
+            <p className="text-muted-foreground text-sm leading-relaxed">
+              The complete platform for building and managing your online store.
+            </p>
           </div>
 
-          {/* Contact Information */}
-          <div>
-            <h3 className="font-semibold text-foreground mb-3 md:mb-4 text-sm md:text-base">Contact information</h3>
-            <p className="text-muted-foreground italic text-sm">Bangkok, Thailand</p>
-            <p className="text-muted-foreground text-sm mt-1">+66 123 456 789</p>
-            <p className="text-muted-foreground text-sm">nexora.digital.site</p>
+          <div className="space-y-4">
+            <h4 className="font-semibold">Product</h4>
+            <ul className="space-y-2 text-sm text-muted-foreground">
+              <li>
+                <a href="#features" className="hover:text-foreground transition-colors">
+                  Features
+                </a>
+              </li>
+              <li>
+                <a href="#pricing" className="hover:text-foreground transition-colors">
+                  Pricing
+                </a>
+              </li>
+              <li>
+                <a href="#testimonials" className="hover:text-foreground transition-colors">
+                  Testimonials
+                </a>
+              </li>
+              <li>
+              </li>
+            </ul>
           </div>
 
-          {/* Newsletter Signup */}
           <div>
-            <h3 className="font-semibold text-foreground mb-3 md:mb-4 text-sm md:text-base">Sign up for updates</h3>
+            <h3 className="font-semibold text-foreground mb-3 md:mb-4 text-sm md:text-base">
+              Contact information
+            </h3>
+            <p className="text-muted-foreground italic text-sm">
+              Bangkok, Thailand
+            </p>
+            <p className="text-muted-foreground text-sm mt-1">+66 0629474106</p>
+            <p className="text-muted-foreground text-sm">nexoradigital.site</p>
+          </div>
+          
+          {/* <div>
+            <h3 className="font-semibold text-foreground mb-3 md:mb-4 text-sm md:text-base">
+              Sign up for updates
+            </h3>
             <div className="flex flex-col md:flex-row gap-2 md:gap-0">
-              <Input 
-                type="email" 
-                placeholder="Email" 
+              <Input
+                type="email"
+                placeholder="Email"
                 className="md:rounded-r-none text-sm"
               />
-              <Button 
-                type="submit" 
+              <Button
+                type="submit"
                 className="md:rounded-l-none h-9"
                 variant="default"
                 size="sm"
@@ -43,14 +70,12 @@ const Footer = () => {
                 Subscribe
               </Button>
             </div>
-            
-            {/* Social Media Icons */}
             <div className="flex space-x-4 mt-4 md:mt-6">
               <Instagram className="h-5 w-5 text-muted-foreground hover:text-primary cursor-pointer transition-colors" />
               <Youtube className="h-5 w-5 text-muted-foreground hover:text-primary cursor-pointer transition-colors" />
               <Twitter className="h-5 w-5 text-muted-foreground hover:text-primary cursor-pointer transition-colors" />
             </div>
-          </div>
+          </div> */}
         </div>
 
         {/* Bottom Bar */}

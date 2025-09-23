@@ -2,76 +2,70 @@
 
 import { ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-// import { useCart } from "@/contexts/CartContext";
+import { useState } from "react";
+import { MobileNav } from "@/components/mobile-nav";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 const Header = () => {
-  //   const { state, dispatch } = useCart();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  //   const isActive = (path: string) => location.pathname === path;
-  const pathname = usePathname();
-  const isActive = (path: string) => pathname === path;
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
 
   return (
-    <nav className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border">
+    <nav className="border-b border-border/40">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          <Link href="/" className="flex items-center">
-            <h1 className="text-2xl font-serif font-semibold text-primary">
-              Nexora Digital
-            </h1>
-          </Link>
-
-          <div className="hidden md:flex items-center space-x-8">
-            <Link
-              href="/"
-              className={`text-sm font-medium transition-colors hover:text-primary ${
-                isActive("/") ? "text-primary" : "text-muted-foreground"
-              }`}
-            >
-              Home
-            </Link>
-            <Link
-              href="/shop"
-              className={`text-sm font-medium transition-colors hover:text-primary ${
-                isActive("/shop") ? "text-primary" : "text-muted-foreground"
-              }`}
-            >
-              Shop
-            </Link>
-            <Link
-              href="/contact"
-              className={`text-sm font-medium transition-colors hover:text-primary ${
-                isActive("/contact") ? "text-primary" : "text-muted-foreground"
-              }`}
-            >
-              Contact
-            </Link>
-            <Link
-              href="/delivery"
-              className={`text-sm font-medium transition-colors hover:text-primary ${
-                isActive("/delivery") ? "text-primary" : "text-muted-foreground"
-              }`}
-            >
-              Delivery
-            </Link>
+          <div className="flex items-center space-x-2">
+            <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center">
+              <ShoppingCart className="w-5 h-5 text-primary-foreground" />
+            </div>
+            <span className="text-xl font-bold text-foreground">
+              Sell Point
+            </span>
           </div>
-
-          <div className="flex items-center space-x-4">
-            <Button
-              variant="ghost"
-              size="sm"
-              className="relative"
-            //   onClick={() => dispatch({ type: "TOGGLE_CART" })}
-            >
-              <ShoppingCart className="h-5 w-5" />
-              {/* {state.items.length > 0 && (
-                <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                  {state.items.length}
-                </span>
-              )} */}
-            </Button>
+          <div className="flex items-center space-x-2">
+            <ThemeToggle />
+            <div className="hidden md:flex items-center space-x-8">
+              <a
+                href="#features"
+                className="text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Features
+              </a>
+              <a
+                href="#pricing"
+                className="text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Pricing
+              </a>
+              <a
+                href="#testimonials"
+                className="text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Testimonials
+              </a>
+              <Button asChild variant="outline" size="sm">
+                <a
+                  href={process.env.NEXT_PUBLIC_ADMIN_DOMAIN}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Sign In
+                </a>
+              </Button>
+              <Button asChild size="sm">
+                <a
+                  href={process.env.NEXT_PUBLIC_ADMIN_DOMAIN_SIGNUP}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Get Started
+                </a>
+              </Button>
+            </div>
+            <MobileNav isOpen={isMobileMenuOpen} onToggle={toggleMobileMenu} />
           </div>
         </div>
       </div>
