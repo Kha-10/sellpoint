@@ -225,7 +225,7 @@ const Checkout = ({ storeData }: { storeData: StoreData }) => {
                 );
               }
 
-              const data = await uploadRes.json();
+              // const data = await uploadRes.json();
             } catch (err) {
               console.error("Upload error:", err);
             }
@@ -441,7 +441,7 @@ const Checkout = ({ storeData }: { storeData: StoreData }) => {
                 <FormField
                   control={paymentForm.control}
                   name="paymentSlip"
-                  render={({ field: { onChange, value, ...field } }) => (
+                  render={({ field: { onChange, ...field } }) => (
                     <FormItem>
                       <FormLabel>Upload Payment Slip (required)</FormLabel>
                       <FormControl>
