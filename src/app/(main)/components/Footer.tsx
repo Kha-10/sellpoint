@@ -21,22 +21,30 @@ const Footer = () => {
             <h4 className="font-semibold">Product</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>
-                <a href="#features" className="hover:text-foreground transition-colors">
+                <a
+                  href="#features"
+                  className="hover:text-foreground transition-colors"
+                >
                   Features
                 </a>
               </li>
               <li>
-                <a href="#pricing" className="hover:text-foreground transition-colors">
+                <a
+                  href="#pricing"
+                  className="hover:text-foreground transition-colors"
+                >
                   Pricing
                 </a>
               </li>
               <li>
-                <a href="#testimonials" className="hover:text-foreground transition-colors">
+                <a
+                  href="#testimonials"
+                  className="hover:text-foreground transition-colors"
+                >
                   Testimonials
                 </a>
               </li>
-              <li>
-              </li>
+              <li></li>
             </ul>
           </div>
 
@@ -47,10 +55,10 @@ const Footer = () => {
             <p className="text-muted-foreground italic text-sm">
               Bangkok, Thailand
             </p>
-            <p className="text-muted-foreground text-sm mt-1">+66 0629474106</p>
+            <p className="text-muted-foreground text-sm mt-1">+66 0660611498</p>
             <p className="text-muted-foreground text-sm">nexoradigital.site</p>
           </div>
-          
+
           {/* <div>
             <h3 className="font-semibold text-foreground mb-3 md:mb-4 text-sm md:text-base">
               Sign up for updates
