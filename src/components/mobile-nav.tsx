@@ -74,14 +74,27 @@ export function MobileNav({ isOpen, onToggle }: MobileNavProps) {
               {/* Action buttons */}
               <div className="p-4 space-y-3 border-t border-border">
                 <Button
+                  asChild
                   variant="outline"
                   className="w-full bg-transparent"
                   onClick={onToggle}
                 >
-                  Sign In
+                  <a
+                    href={process.env.NEXT_PUBLIC_ADMIN_DOMAIN}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Sign In
+                  </a>
                 </Button>
-                <Button className="w-full" onClick={onToggle}>
-                  Get Started
+                <Button asChild className="w-full" onClick={onToggle}>
+                  <a
+                    href={process.env.NEXT_PUBLIC_ADMIN_DOMAIN_SIGNUP}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Get Started
+                  </a>
                 </Button>
               </div>
             </div>
