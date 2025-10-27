@@ -1,23 +1,23 @@
-export function formatWithCurrency(value: number, code: string, locale = "en") {
+export function formatWithCurrency(
+  value: number | string,
+  code: string,
+  locale = "en"
+) {
   try {
+    const numericValue = Number(value);
+
+    if (isNaN(numericValue)) return `0 ${code}`;
+
     const formatter = new Intl.NumberFormat(locale, {
       style: "currency",
       currency: code,
-      currencyDisplay: "narrowSymbol", // always show compact symbol
+      currencyDisplay: "narrowSymbol",
       minimumFractionDigits: 0,
       maximumFractionDigits: 2,
     });
 
-    // Extract parts
-    const parts = formatter.formatToParts(value);
-    const numberPart = Number(parts
-      .filter((p) => p.type !== "currency")
-      .map((p) => p.value)
-      .join("")).toFixed(2);
-    const symbolPart = parts.find((p) => p.type === "currency")?.value || code;
-
-    return `${symbolPart}${numberPart}`; // always number + symbol
+    return formatter.format(numericValue);
   } catch {
-    return `${value} ${code}`;
+    return `${value || 0} ${code}`;
   }
 }

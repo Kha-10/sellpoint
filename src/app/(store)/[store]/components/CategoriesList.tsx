@@ -52,13 +52,48 @@ export default function CategoriesList({
                       {product.name}
                     </h3>
                     <p className="text-sm text-gray-600">
-                      {formatWithCurrency(
-                        !!product.variants && product.variants?.length > 0
-                          ? product.variants[0]?.originalPrice ||
-                              product.variants[0]?.price
-                          : product.originalPrice || product.price,
-                        storeData?.settings.currency
-                      )}
+                      {(() => {
+                        let price = 0;
+
+                        if (
+                          !!product?.variants &&
+                          product?.variants?.length > 0
+                        ) {
+                          const prices = product.variants
+                            .map(
+                              (v) => Number(v.originalPrice) || Number(v.price)
+                            )
+                            .filter((p) => !isNaN(p) && p > 0);
+
+                          if (prices.length > 0) {
+                            const min = Math.min(...prices);
+                            const max = Math.max(...prices);
+                            return min !== max
+                              ? `${formatWithCurrency(
+                                  min,
+                                  storeData?.settings?.currency
+                                )} – ${formatWithCurrency(
+                                  max,
+                                  storeData?.settings?.currency
+                                )}`
+                              : formatWithCurrency(
+                                  min,
+                                  storeData?.settings?.currency
+                                );
+                          }
+                        }
+
+                        price =
+                          Number(product?.originalPrice) ||
+                          Number(product?.price) ||
+                          0;
+                        if (!price) return "Not available";
+
+                        return formatWithCurrency(
+                          price,
+                          storeData?.settings?.currency
+                        );
+                      })()}
                     </p>
                   </div>
                 </Link>
