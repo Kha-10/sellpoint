@@ -53,7 +53,10 @@ export default function CategoriesList({
                     </h3>
                     <p className="text-sm text-gray-600">
                       {formatWithCurrency(
-                        product.price,
+                        !!product.variants && product.variants?.length > 0
+                          ? product.variants[0]?.originalPrice ||
+                              product.variants[0]?.price
+                          : product.originalPrice || product.price,
                         storeData?.settings.currency
                       )}
                     </p>
