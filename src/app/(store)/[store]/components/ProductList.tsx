@@ -38,16 +38,20 @@ const ProductList = ({ products }: { products: Product[] }) => {
             <h3 className="text-sm font-medium font-serif  text-gray-900 line-clamp-2 mb-2">
               {item.name}
             </h3>
-            <div className="text-sm text-primary">
+            <div className="text-primary text-sm">
               {formatWithCurrency(
-                item.price !== 0
-                  ? item.price
-                  : item.variants && item.variants.length > 0
-                  ? item.variants[0].price
-                  : 0,
-                storeData?.settings?.currency
+                item.price ?? item.originalPrice ?? 0,
+                storeData?.settings?.currency ?? "USD"
               )}
             </div>
+            {item.price !== item.originalPrice && item.originalPrice! > 0 && (
+              <div className="text-destructive line-through text-sm">
+                {formatWithCurrency(
+                  item.originalPrice!,
+                  storeData?.settings?.currency ?? "USD"
+                )}
+              </div>
+            )}
           </div>
         </Link>
       ))}

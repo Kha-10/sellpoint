@@ -340,11 +340,6 @@ const ProductDetail = ({
 
                       const quantities = form.watch(quantitiesPath) || [];
                       const quantity = quantities[idx] ?? 1;
-                      //   console.log("answers", answers);
-                      //   console.log("idx", idx);
-                      //   console.log("isChecked", isChecked);
-                      //   console.log("quantities", quantities);
-                      //   console.log("quantity", quantity);
 
                       return (
                         <FormItem
@@ -492,7 +487,7 @@ const ProductDetail = ({
   return (
     <div className="max-w-5xl mx-auto px-5 min-h-screen bg-white relative">
       <div className="w-full mx-auto p-4 lg:p-6 min-h-screen">
-        <Button variant="ghost" asChild className="mb-6 hover:bg-gray-100">
+        <Button variant="ghost" asChild className="mb-6 hover:bg-gray-100 hover:text-primary">
           <Link href={`/${storeData?.slug}`}>
             <ChevronLeft className="h-4 w-4 mr-2" />
             Back
@@ -596,6 +591,26 @@ const ProductDetail = ({
                         renderOption(option as Option, index)
                       )}
                     </div>
+                  </div>
+                )}
+
+                {product.options?.length === 0 && (
+                  <div className="flex items-center gap-2">
+                    <span className="text-primary">
+                      {formatWithCurrency(
+                        product.price ?? product.originalPrice ?? 0,
+                        storeData?.settings?.currency ?? "USD"
+                      )}
+                    </span>
+                    {product.price !== product.originalPrice &&
+                      product.originalPrice! > 0 && (
+                        <span className="text-destructive line-through">
+                          {formatWithCurrency(
+                            product.originalPrice!,
+                            storeData?.settings?.currency ?? "USD"
+                          )}
+                        </span>
+                      )}
                   </div>
                 )}
 

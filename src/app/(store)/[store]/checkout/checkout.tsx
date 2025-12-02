@@ -602,7 +602,12 @@ const Checkout = ({ storeData }: { storeData: StoreData }) => {
                     Qty: {item.quantity}
                   </p>
                 </div>
-                <p className="font-semibold">${item.totalPrice.toFixed(2)}</p>
+                <p className="font-semibold">
+                  {formatWithCurrency(
+                    item.totalPrice,
+                    storeData?.settings?.currency
+                  )}
+                </p>
               </div>
             ))}
           </div>

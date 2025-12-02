@@ -121,7 +121,7 @@ export default function Sidebar({
             asChild
             variant="outline"
             type="button"
-            className="w-full justify-start text-sm bg-transparent hover:bg-gray-100"
+            className="w-full justify-start text-sm bg-transparent hover:bg-gray-100 hover:text-primary"
           >
             <a
               href={process.env.NEXT_PUBLIC_ADMIN_DOMAIN}
