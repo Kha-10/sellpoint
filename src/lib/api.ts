@@ -33,6 +33,7 @@ interface Settings {
 export interface StoreData {
   _id: string;
   name: string;
+  logo?: string;
   email: string;
   phone: string;
   address: string;

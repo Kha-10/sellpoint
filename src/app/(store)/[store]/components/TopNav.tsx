@@ -5,6 +5,7 @@ import { StoreData } from "@/lib/api";
 import { useCart } from "@/app/(store)/[store]/providers/CartContext";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import Image from "next/image";
 
 interface TopNavProps {
   setSidebarOpen: (open: boolean) => void;
@@ -14,6 +15,8 @@ interface TopNavProps {
 
 export default function TopNav({ setSidebarOpen, storeData }: TopNavProps) {
   const { state, dispatch } = useCart();
+  console.log(storeData);
+
   return (
     <div className="bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between sticky top-0 z-30">
       <div className="flex items-center">
@@ -27,9 +30,19 @@ export default function TopNav({ setSidebarOpen, storeData }: TopNavProps) {
           href={`/${storeData.slug}`}
           className="hidden lg:flex items-center"
         >
-          <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center mr-3">
-            <ShoppingCart className="h-5 w-5 text-gray-600" />
-          </div>
+          {storeData?.logo ? (
+            <Image
+              src={process.env.NEXT_PUBLIC_CLOUDINARY + storeData?.logo}
+              alt={storeData?.name}
+              width={50}
+              height={50}
+              className="rounded-lg"
+            />
+          ) : (
+            <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center mr-3">
+              <ShoppingCart className="h-5 w-5 text-gray-600" />
+            </div>
+          )}
           <h1 className="text-xl font-semibold text-gray-900">
             {storeData?.name}
           </h1>

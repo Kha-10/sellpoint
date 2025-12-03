@@ -262,7 +262,7 @@ const Checkout = ({ storeData }: { storeData: StoreData }) => {
             ${
               currentStep >= step
                 ? "bg-primary text-primary-foreground"
-                : "bg-muted text-muted-foreground"
+                : "bg-gray-100 text-primary"
             }
           `}
           >
@@ -271,7 +271,7 @@ const Checkout = ({ storeData }: { storeData: StoreData }) => {
           {step < 3 && (
             <div
               className={`w-16 h-1 mx-2 ${
-                currentStep > step ? "bg-primary" : "bg-muted"
+                currentStep > step ? "bg-primary" : "bg-gray-200"
               }`}
             />
           )}
@@ -428,8 +428,8 @@ const Checkout = ({ storeData }: { storeData: StoreData }) => {
 
             {paymentForm.watch("method") === "promptpay" && (
               <div className="text-center space-y-4">
-                <div className="bg-muted p-6 rounded-lg">
-                  <QrCode className="h-32 w-32 mx-auto text-muted-foreground mb-4" />
+                <div className="bg-white p-6 rounded-lg">
+                  <QrCode className="h-32 w-32 mx-auto text-primary mb-4" />
                   <p className="font-medium">
                     PromptPay Number :{" "}
                     {storeData.settings.payments.promptPay.phoneNumber}
