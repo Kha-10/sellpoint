@@ -50,10 +50,20 @@ export default function TopNav({ setSidebarOpen, storeData }: TopNavProps) {
       </div>
 
       <Link href={`/${storeData.slug}`} className="lg:hidden flex items-center">
-        <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center mr-2">
-          <ShoppingCart className="h-5 w-5 text-gray-600" />
-        </div>
-        <h1 className="text-lg font-semibold text-gray-900">
+        {storeData?.logo ? (
+          <Image
+            src={process.env.NEXT_PUBLIC_CLOUDINARY + storeData?.logo}
+            alt={storeData?.name}
+            width={50}
+            height={50}
+            className="rounded-lg"
+          />
+        ) : (
+          <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center mr-3">
+            <ShoppingCart className="h-5 w-5 text-gray-600" />
+          </div>
+        )}
+        <h1 className="text-xl font-semibold text-gray-900">
           {storeData?.name}
         </h1>
       </Link>
