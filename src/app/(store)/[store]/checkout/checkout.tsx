@@ -44,6 +44,7 @@ const customerInfoSchema = z.object({
   deliveryAddress: z.object({
     fullAddress: z.string(),
   }),
+  notes: z.string().optional(),
 });
 
 const paymentInfoSchema = z
@@ -358,6 +359,24 @@ const Checkout = ({ storeData }: { storeData: StoreData }) => {
                 </FormItem>
               )}
             />
+
+            <FormField
+              control={customerForm.control}
+              name="notes"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Notes</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="Enter your notes"
+                      rows={3}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </form>
         </Form>
       </CardContent>
@@ -655,7 +674,9 @@ const Checkout = ({ storeData }: { storeData: StoreData }) => {
           <Separator /> */}
           <div className="flex justify-between text-lg font-bold">
             <span>Total</span>
-            <span>${total.toFixed(2)}</span>
+            <span>
+              {formatWithCurrency(total, storeData?.settings?.currency)}
+            </span>
           </div>
         </div>
       </CardContent>
@@ -711,7 +732,7 @@ const Checkout = ({ storeData }: { storeData: StoreData }) => {
               onClick={() =>
                 currentStep > 1
                   ? setCurrentStep((prev) => prev - 1)
-                  : router.push("/cart")
+                  : router.push(`/${storeData.slug}`)
               }
             >
               <ChevronLeft className="h-4 w-4 mr-2" />
